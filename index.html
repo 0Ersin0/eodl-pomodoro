@@ -1,0 +1,1238 @@
+<!--
+  Copyright 2026 EO Digital Lab. Licensed under the Apache License, Version 2.0.
+  You may not use this file except in compliance with the License.
+  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+  pomodorƎ — Air-Gapped, Privacy-First Pomodoro Timer
+  Zero Cookies · Zero Tracking · Zero Outbound Requests · 100% Local
+-->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="pomodorƎ — Air-gapped, privacy-first Pomodoro timer by EO Digital Lab.">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
+  <title>pomodorƎ</title>
+  <style>
+    /* ==================================================================
+       pomodorƎ  ·  EO Digital Lab
+       Design System: Cybersecurity Laboratory Dark Theme
+       Stack: Pure HTML5 + CSS3 + Vanilla JS (Zero Dependencies)
+       ================================================================== */
+
+    /* — Reset — */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* — Design Tokens — */
+    :root {
+      /* Surfaces */
+      --bg-abyss: #050816;
+      --bg-surface: #0f172a;
+      --bg-elevated: #1e293b;
+      --bg-hover: #263348;
+
+      /* Text Hierarchy */
+      --text-ice: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #475569;
+      --text-ghost: #334155;
+
+      /* Accent: Work (Neon Red) */
+      --neon-red: #ff3131;
+      --neon-red-50: rgba(255, 49, 49, 0.50);
+      --neon-red-20: rgba(255, 49, 49, 0.20);
+      --neon-red-10: rgba(255, 49, 49, 0.10);
+      --neon-red-06: rgba(255, 49, 49, 0.06);
+
+      /* Accent: Break (Electric Cyan) */
+      --cyan: #00f2fe;
+      --cyan-50: rgba(0, 242, 254, 0.50);
+      --cyan-20: rgba(0, 242, 254, 0.20);
+      --cyan-10: rgba(0, 242, 254, 0.10);
+      --cyan-06: rgba(0, 242, 254, 0.06);
+
+      /* Chrome */
+      --border: rgba(148, 163, 184, 0.08);
+      --border-lit: rgba(148, 163, 184, 0.15);
+      --radius: 14px;
+      --radius-sm: 8px;
+      --radius-xs: 5px;
+      --shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.50);
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --speed: 0.22s;
+
+      /* Typography */
+      --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* — Base — */
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      background: var(--bg-abyss);
+      color: var(--text-ice);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* — Ambient Glow — */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 12% 18%, var(--neon-red-06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 88% 78%, var(--cyan-06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: ambientPulse 28s ease-in-out infinite alternate;
+    }
+
+    @keyframes ambientPulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.55; }
+      100% { opacity: 1; }
+    }
+
+    /* Scanline texture */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* — Layout Shell — */
+    .shell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ==================================================================
+       HEADER
+       ================================================================== */
+    .header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      user-select: none;
+    }
+
+    /* Pure-CSS geometric logo token */
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .logo-mark::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border: 2px solid var(--neon-red);
+      border-radius: 3px;
+      transform: rotate(45deg);
+      box-shadow: 0 0 10px var(--neon-red-20);
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      background: var(--neon-red);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px var(--neon-red-50);
+    }
+
+    .brand-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .brand-name .accent {
+      color: var(--neon-red);
+      text-shadow: 0 0 14px var(--neon-red-20);
+    }
+
+    .ver {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--text-ghost);
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      user-select: none;
+    }
+
+    /* ==================================================================
+       MAIN
+       ================================================================== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 1.6rem;
+      padding: 2rem 0;
+    }
+
+    /* — Mode Tabs — */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-surface);
+      padding: 4px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 0.55rem 0.2rem;
+      border: none;
+      border-radius: calc(var(--radius) - 4px);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--speed) var(--ease);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    .tab:hover {
+      color: var(--text-ice);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab.active {
+      color: var(--text-ice);
+      background: var(--bg-elevated);
+      font-weight: 600;
+    }
+
+    .tab.active[data-mode="pomodoro"] {
+      box-shadow: 0 0 14px var(--neon-red-10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .tab.active[data-mode="short"],
+    .tab.active[data-mode="long"] {
+      box-shadow: 0 0 14px var(--cyan-10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    /* — Timer Card — */
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top accent hairline */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-red-20), transparent);
+      transition: background 0.4s var(--ease);
+    }
+
+    .card.is-break::before {
+      background: linear-gradient(90deg, transparent, var(--cyan-20), transparent);
+    }
+
+    /* — Countdown — */
+    .clock-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+    }
+
+    .clock {
+      font-family: var(--font-mono);
+      font-size: 5.2rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      color: var(--neon-red);
+      text-shadow: 0 0 28px var(--neon-red-20), 0 0 56px var(--neon-red-10);
+      font-variant-numeric: tabular-nums;
+      min-width: 5ch;
+      text-align: center;
+      transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease);
+      user-select: none;
+    }
+
+    .clock.break-glow {
+      color: var(--cyan);
+      text-shadow: 0 0 28px var(--cyan-20), 0 0 56px var(--cyan-10);
+    }
+
+    .clock-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 500;
+    }
+
+    /* — Progress Bar — */
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: var(--bg-elevated);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--neon-red);
+      border-radius: 2px;
+      transition: width 0.9s var(--ease), background 0.4s var(--ease);
+      box-shadow: 0 0 8px var(--neon-red-20);
+      transform-origin: left;
+    }
+
+    .progress-bar.break-bar {
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan-20);
+    }
+
+    /* — Controls — */
+    .controls {
+      display: flex;
+      gap: 0.6rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .ctl {
+      padding: 0.65rem 1.5rem;
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-ui);
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--speed) var(--ease);
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      letter-spacing: 0.02em;
+    }
+
+    .ctl-icon {
+      font-size: 0.92rem;
+      line-height: 1;
+    }
+
+    /* Start button */
+    .ctl--go {
+      background: var(--neon-red);
+      color: #fff;
+      border-color: var(--neon-red);
+      box-shadow: 0 2px 14px var(--neon-red-20), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    }
+
+    .ctl--go:hover {
+      background: #e42b2b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 22px var(--neon-red-20), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    }
+
+    .ctl--go:active {
+      transform: translateY(0);
+    }
+
+    .ctl--go.paused {
+      background: var(--bg-elevated);
+      color: var(--text-ice);
+      border-color: var(--border-lit);
+      box-shadow: var(--shadow);
+    }
+
+    .ctl--go.paused:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Ghost button */
+    .ctl--ghost {
+      background: var(--bg-abyss);
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+
+    .ctl--ghost:hover {
+      color: var(--text-ice);
+      border-color: var(--border-lit);
+      background: var(--bg-surface);
+      transform: translateY(-1px);
+    }
+
+    .ctl--ghost:active {
+      transform: translateY(0);
+    }
+
+    /* — Session Dots — */
+    .sessions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pip {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--text-ghost);
+      transition: all var(--speed) var(--ease);
+    }
+
+    .pip.lit {
+      background: var(--neon-red);
+      border-color: var(--neon-red);
+      box-shadow: 0 0 8px var(--neon-red-20);
+    }
+
+    .session-n {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-ghost);
+      margin-left: 0.35rem;
+    }
+
+    /* ==================================================================
+       SETTINGS PANEL
+       ================================================================== */
+    .cfg-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      color: var(--text-ghost);
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      transition: all var(--speed) var(--ease);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      letter-spacing: 0.03em;
+    }
+
+    .cfg-toggle:hover {
+      color: var(--text-muted);
+      border-color: var(--border-lit);
+      background: var(--bg-surface);
+    }
+
+    .cfg-panel {
+      width: 100%;
+      max-width: 400px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .cfg-panel.open {
+      display: block;
+      animation: cfgReveal 0.3s var(--ease);
+    }
+
+    @keyframes cfgReveal {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cfg-title {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 0.9rem;
+    }
+
+    .cfg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+    }
+
+    .cfg-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .cfg-group label {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      background: var(--bg-abyss);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      overflow: hidden;
+    }
+
+    .stepper-btn {
+      width: 30px;
+      height: 34px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--speed) var(--ease);
+      font-family: var(--font-mono);
+    }
+
+    .stepper-btn:hover {
+      background: var(--bg-elevated);
+      color: var(--text-ice);
+    }
+
+    .stepper-input {
+      width: 40px;
+      height: 34px;
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      color: var(--text-ice);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      text-align: center;
+      outline: none;
+      appearance: textfield;
+    }
+
+    .stepper-input::-webkit-inner-spin-button,
+    .stepper-input::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    .stepper-input:focus {
+      background: rgba(255, 49, 49, 0.04);
+    }
+
+    /* Volume */
+    .vol-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .vol-label {
+      font-size: 0.62rem;
+      color: var(--text-ghost);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .vol-range {
+      appearance: none;
+      flex: 1;
+      height: 3px;
+      background: var(--bg-elevated);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .vol-range::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--neon-red);
+      border: 2px solid var(--bg-surface);
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--neon-red-20);
+    }
+
+    .vol-range::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--neon-red);
+      border: 2px solid var(--bg-surface);
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--neon-red-20);
+    }
+
+    .vol-n {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-ghost);
+      min-width: 2.2ch;
+      text-align: right;
+    }
+
+    .cfg-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      margin-top: 0.9rem;
+    }
+
+    .ctl-xs {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.7rem;
+      border-radius: var(--radius-xs);
+    }
+
+    /* ==================================================================
+       TOAST
+       ================================================================== */
+    .toast {
+      position: fixed;
+      top: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-140%);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1.3rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-ice);
+      white-space: nowrap;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-icon {
+      font-size: 1rem;
+    }
+
+    /* ==================================================================
+       FOOTER
+       ================================================================== */
+    .footer {
+      width: 100%;
+      text-align: center;
+      padding: 1.4rem 0 1.6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .footer-line {
+      font-size: 0.66rem;
+      color: var(--text-dim);
+      letter-spacing: 0.02em;
+      line-height: 1.7;
+    }
+
+    .footer-copy {
+      font-size: 0.60rem;
+      color: var(--text-ghost);
+      letter-spacing: 0.02em;
+      line-height: 1.7;
+    }
+
+    /* ==================================================================
+       RESPONSIVE
+       ================================================================== */
+    @media (max-width: 480px) {
+      .header { padding: 1.2rem 0 0.75rem; }
+      .brand-name { font-size: 1.1rem; }
+      .main { gap: 1.2rem; padding: 1.5rem 0; }
+      .clock { font-size: 4rem; }
+      .card { padding: 2rem 1.2rem 1.5rem; }
+      .tab { font-size: 0.7rem; padding: 0.5rem 0.15rem; }
+      .ctl { padding: 0.55rem 1rem; font-size: 0.78rem; }
+      .cfg-grid { gap: 0.5rem; }
+    }
+
+    @media (max-width: 340px) {
+      .clock { font-size: 3.2rem; }
+      .cfg-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus */
+    :focus-visible {
+      outline: 2px solid var(--neon-red);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span class="toast-icon" id="toastIcon">🍅</span>
+    <span id="toastMsg">Tamamlandı!</span>
+  </div>
+
+  <div class="shell">
+
+    <!-- ======== HEADER ======== -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <h1 class="brand-name">pomodor<span class="accent">Ǝ</span></h1>
+      </div>
+      <span class="ver">v1.0.0</span>
+    </header>
+
+    <!-- ======== MAIN ======== -->
+    <main class="main">
+
+      <!-- Mode Tabs -->
+      <nav class="tabs" id="tabs" role="tablist" aria-label="Zamanlayıcı modları">
+        <button class="tab active" data-mode="pomodoro" role="tab" aria-selected="true" id="tabPomo">Pomodoro</button>
+        <button class="tab" data-mode="short" role="tab" aria-selected="false" id="tabShort">Kısa Mola</button>
+        <button class="tab" data-mode="long" role="tab" aria-selected="false" id="tabLong">Uzun Mola</button>
+      </nav>
+
+      <!-- Timer Card -->
+      <section class="card" id="card" aria-label="Zamanlayıcı">
+        <div class="clock-zone">
+          <div class="clock" id="clock" aria-live="polite">25:00</div>
+          <span class="clock-label" id="clockLabel">pomodoro</span>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="controls">
+          <button class="ctl ctl--go" id="btnGo" aria-label="Başlat veya Durdur">
+            <span class="ctl-icon">▶</span> Başlat
+          </button>
+          <button class="ctl ctl--ghost" id="btnReset" aria-label="Sıfırla">
+            <span class="ctl-icon">↺</span> Sıfırla
+          </button>
+        </div>
+
+        <div class="sessions" id="sessions" aria-label="Oturum sayacı">
+          <div class="pip" data-i="0"></div>
+          <div class="pip" data-i="1"></div>
+          <div class="pip" data-i="2"></div>
+          <div class="pip" data-i="3"></div>
+          <span class="session-n" id="sessionN">0 / 4</span>
+        </div>
+      </section>
+
+      <!-- Settings Toggle -->
+      <button class="cfg-toggle" id="cfgToggle" aria-expanded="false" aria-controls="cfgPanel">⚙ Ayarlar</button>
+
+      <!-- Settings Panel -->
+      <div class="cfg-panel" id="cfgPanel" role="region" aria-label="Süre ayarları">
+        <div class="cfg-title">Süre Ayarları (dk)</div>
+        <div class="cfg-grid">
+          <div class="cfg-group">
+            <label for="inPomo">Pomodoro</label>
+            <div class="stepper">
+              <button class="stepper-btn" data-target="inPomo" data-dir="-1" aria-label="Azalt">−</button>
+              <input type="number" class="stepper-input" id="inPomo" min="1" max="120" value="25">
+              <button class="stepper-btn" data-target="inPomo" data-dir="1" aria-label="Artır">+</button>
+            </div>
+          </div>
+          <div class="cfg-group">
+            <label for="inShort">Kısa Mola</label>
+            <div class="stepper">
+              <button class="stepper-btn" data-target="inShort" data-dir="-1" aria-label="Azalt">−</button>
+              <input type="number" class="stepper-input" id="inShort" min="1" max="60" value="5">
+              <button class="stepper-btn" data-target="inShort" data-dir="1" aria-label="Artır">+</button>
+            </div>
+          </div>
+          <div class="cfg-group">
+            <label for="inLong">Uzun Mola</label>
+            <div class="stepper">
+              <button class="stepper-btn" data-target="inLong" data-dir="-1" aria-label="Azalt">−</button>
+              <input type="number" class="stepper-input" id="inLong" min="1" max="60" value="15">
+              <button class="stepper-btn" data-target="inLong" data-dir="1" aria-label="Artır">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="vol-row">
+          <span class="vol-label">🔊 Ses</span>
+          <input type="range" class="vol-range" id="volRange" min="0" max="100" value="65">
+          <span class="vol-n" id="volN">65</span>
+        </div>
+        <div class="cfg-foot">
+          <button class="ctl ctl--ghost ctl-xs" id="btnTestAlarm">🔔 Test</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ======== FOOTER ======== -->
+    <footer class="footer">
+      <p class="footer-line">Sıfır Çerez • Sıfır Takip • %100 Lokal • 🔒 Verileriniz tarayıcınızdan dışarı çıkmaz.</p>
+      <p class="footer-copy">© 2026 EO Digital Lab. Tüm hakları saklıdır. Apache License 2.0 kapsamında lisanslanmıştır.</p>
+    </footer>
+  </div>
+
+  <script>
+    /* ==================================================================
+       pomodorƎ · Core Engine
+       EO Digital Lab — Air-Gapped · Zero Cookies · Zero Tracking
+       Copyright 2026 EO Digital Lab. Apache License 2.0
+       ================================================================== */
+    (function () {
+      "use strict";
+
+      /* ---- Constants ---- */
+      var KEY = "pomodore_cfg";
+      var DEFAULTS = { pomodoro: 25, short: 5, long: 15 };
+      var LABELS = { pomodoro: "pomodoro", short: "kısa mola", long: "uzun mola" };
+      var LIMITS = { pomodoro: [1, 120], short: [1, 60], long: [1, 60] };
+
+      /* ---- State ---- */
+      var mode = "pomodoro";
+      var dur = { pomodoro: 25, short: 5, long: 15 };
+      var totalSec = dur.pomodoro * 60;
+      var remainSec = totalSec;
+      var running = false;
+      var tick = null;
+      var sessions = 0;
+      var volume = 0.65;
+
+      /* ---- DOM ---- */
+      var $clock = document.getElementById("clock");
+      var $label = document.getElementById("clockLabel");
+      var $bar = document.getElementById("progressBar");
+      var $btnGo = document.getElementById("btnGo");
+      var $btnReset = document.getElementById("btnReset");
+      var $card = document.getElementById("card");
+      var $tabs = document.querySelectorAll(".tab");
+      var $pips = document.querySelectorAll(".pip");
+      var $sessionN = document.getElementById("sessionN");
+      var $cfgToggle = document.getElementById("cfgToggle");
+      var $cfgPanel = document.getElementById("cfgPanel");
+      var $inPomo = document.getElementById("inPomo");
+      var $inShort = document.getElementById("inShort");
+      var $inLong = document.getElementById("inLong");
+      var $volRange = document.getElementById("volRange");
+      var $volN = document.getElementById("volN");
+      var $toast = document.getElementById("toast");
+      var $toastIcon = document.getElementById("toastIcon");
+      var $toastMsg = document.getElementById("toastMsg");
+
+      /* ==================================================================
+         INIT
+         ================================================================== */
+      function boot() {
+        loadCfg();
+        render();
+        renderPips();
+        wireEvents();
+        syncTitle();
+      }
+
+      /* ---- localStorage ---- */
+      function loadCfg() {
+        try {
+          var raw = localStorage.getItem(KEY);
+          if (raw) {
+            var d = JSON.parse(raw);
+            dur.pomodoro = clamp(d.pomodoro != null ? d.pomodoro : 25, LIMITS.pomodoro[0], LIMITS.pomodoro[1]);
+            dur.short = clamp(d.short != null ? d.short : 5, LIMITS.short[0], LIMITS.short[1]);
+            dur.long = clamp(d.long != null ? d.long : 15, LIMITS.long[0], LIMITS.long[1]);
+            volume = clamp(d.volume != null ? d.volume : 0.65, 0, 1);
+            sessions = clamp(d.sessions != null ? d.sessions : 0, 0, 9999);
+          }
+        } catch (e) { /* corrupt data — defaults used */ }
+
+        $inPomo.value = dur.pomodoro;
+        $inShort.value = dur.short;
+        $inLong.value = dur.long;
+        $volRange.value = Math.round(volume * 100);
+        $volN.textContent = Math.round(volume * 100);
+
+        totalSec = dur[mode] * 60;
+        remainSec = totalSec;
+      }
+
+      function saveCfg() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({
+            pomodoro: dur.pomodoro,
+            short: dur.short,
+            long: dur.long,
+            volume: volume,
+            sessions: sessions
+          }));
+        } catch (e) { /* quota exceeded or blocked */ }
+      }
+
+      function clamp(v, lo, hi) {
+        return Math.max(lo, Math.min(hi, v));
+      }
+
+      /* ==================================================================
+         RENDER
+         ================================================================== */
+      function render() {
+        var m = String(Math.floor(remainSec / 60)).padStart(2, "0");
+        var s = String(remainSec % 60).padStart(2, "0");
+        $clock.textContent = m + ":" + s;
+
+        var isBreak = mode !== "pomodoro";
+        $clock.classList.toggle("break-glow", isBreak);
+        $card.classList.toggle("is-break", isBreak);
+        $bar.classList.toggle("break-bar", isBreak);
+        $label.textContent = LABELS[mode];
+
+        var pct = totalSec > 0 ? (remainSec / totalSec) * 100 : 100;
+        $bar.style.width = pct + "%";
+
+        syncTitle();
+      }
+
+      function renderPips() {
+        var filled = sessions % 4;
+        $pips.forEach(function (p, i) {
+          p.classList.toggle("lit", i < filled);
+        });
+        $sessionN.textContent = sessions + " / 4";
+      }
+
+      function syncTitle() {
+        var m = String(Math.floor(remainSec / 60)).padStart(2, "0");
+        var s = String(remainSec % 60).padStart(2, "0");
+        var ts = m + ":" + s;
+
+        if (running) {
+          document.title = "(" + ts + ") pomodor\u018E";
+        } else if (remainSec < totalSec && remainSec > 0) {
+          document.title = "\u23F8 (" + ts + ") pomodor\u018E";
+        } else {
+          document.title = "pomodor\u018E";
+        }
+      }
+
+      function renderGoBtn() {
+        if (running) {
+          $btnGo.innerHTML = '<span class="ctl-icon">\u23F8</span> Durdur';
+          $btnGo.classList.add("paused");
+        } else {
+          var resumed = remainSec < totalSec && remainSec > 0;
+          $btnGo.innerHTML = resumed
+            ? '<span class="ctl-icon">\u25B6</span> Devam'
+            : '<span class="ctl-icon">\u25B6</span> Ba\u015Flat';
+          $btnGo.classList.remove("paused");
+        }
+      }
+
+      /* ==================================================================
+         TIMER ENGINE
+         ================================================================== */
+      function start() {
+        if (running) return;
+        running = true;
+        renderGoBtn();
+        syncTitle();
+        tick = setInterval(function () {
+          remainSec--;
+          if (remainSec <= 0) {
+            remainSec = 0;
+            stop();
+            onComplete();
+          }
+          render();
+        }, 1000);
+      }
+
+      function stop() {
+        running = false;
+        clearInterval(tick);
+        tick = null;
+        renderGoBtn();
+        syncTitle();
+      }
+
+      function reset() {
+        stop();
+        totalSec = dur[mode] * 60;
+        remainSec = totalSec;
+        render();
+        renderGoBtn();
+      }
+
+      function setMode(m) {
+        if (m === mode && !running && remainSec === totalSec) return;
+        stop();
+        mode = m;
+        $tabs.forEach(function (t) {
+          var isActive = t.dataset.mode === m;
+          t.classList.toggle("active", isActive);
+          t.setAttribute("aria-selected", isActive);
+        });
+        totalSec = dur[mode] * 60;
+        remainSec = totalSec;
+        render();
+        renderGoBtn();
+      }
+
+      function onComplete() {
+        fireAlarm();
+        if (mode === "pomodoro") {
+          sessions++;
+          saveCfg();
+          renderPips();
+          notify("\uD83C\uDF45", "Pomodoro tamamlandı! Mola zamanı.");
+        } else {
+          notify("\u2705", "Mola bitti! Odaklanma zamanı.");
+        }
+      }
+
+      /* ==================================================================
+         AUDIO SYNTHESIS — Digital Alarm (AudioContext API)
+         Pattern: 3 × 880 Hz sine pulses, 0.5 s apart, repeated once
+         Zero outbound requests — fully synthesized in-browser.
+         ================================================================== */
+      function fireAlarm() {
+        try {
+          var ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+          function pulse(when, freq, len) {
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, when);
+            gain.gain.setValueAtTime(0, when);
+            gain.gain.linearRampToValueAtTime(volume * 0.45, when + 0.015);
+            gain.gain.setValueAtTime(volume * 0.45, when + len - 0.03);
+            gain.gain.linearRampToValueAtTime(0, when + len);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(when);
+            osc.stop(when + len);
+          }
+
+          var t0 = ctx.currentTime;
+          /* 3 beeps, 0.5 s apart — repeated after 0.8 s gap */
+          [0.0, 0.5, 1.0, 1.8, 2.3, 2.8].forEach(function (offset) {
+            pulse(t0 + offset, 880, 0.18);
+          });
+
+          setTimeout(function () { ctx.close(); }, 4000);
+        } catch (e) { /* AudioContext not available */ }
+      }
+
+      /* ==================================================================
+         TOAST
+         ================================================================== */
+      var toastTimer = null;
+
+      function notify(icon, msg) {
+        $toastIcon.textContent = icon;
+        $toastMsg.textContent = msg;
+        $toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          $toast.classList.remove("show");
+        }, 4000);
+      }
+
+      /* ==================================================================
+         SETTINGS LOGIC
+         ================================================================== */
+      function applyInputs() {
+        dur.pomodoro = clamp(parseInt($inPomo.value, 10) || 25, LIMITS.pomodoro[0], LIMITS.pomodoro[1]);
+        dur.short = clamp(parseInt($inShort.value, 10) || 5, LIMITS.short[0], LIMITS.short[1]);
+        dur.long = clamp(parseInt($inLong.value, 10) || 15, LIMITS.long[0], LIMITS.long[1]);
+        $inPomo.value = dur.pomodoro;
+        $inShort.value = dur.short;
+        $inLong.value = dur.long;
+        saveCfg();
+        if (!running) {
+          totalSec = dur[mode] * 60;
+          remainSec = totalSec;
+          render();
+          renderGoBtn();
+        }
+      }
+
+      /* ==================================================================
+         EVENT WIRING
+         ================================================================== */
+      function wireEvents() {
+        /* Start / Pause toggle */
+        $btnGo.addEventListener("click", function () {
+          running ? stop() : start();
+        });
+
+        /* Reset */
+        $btnReset.addEventListener("click", reset);
+
+        /* Mode tabs */
+        $tabs.forEach(function (tab) {
+          tab.addEventListener("click", function () {
+            setMode(tab.dataset.mode);
+          });
+        });
+
+        /* Settings panel */
+        $cfgToggle.addEventListener("click", function () {
+          var open = $cfgPanel.classList.toggle("open");
+          $cfgToggle.setAttribute("aria-expanded", open);
+        });
+
+        /* Stepper buttons */
+        document.querySelectorAll(".stepper-btn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var input = document.getElementById(btn.dataset.target);
+            var dir = parseInt(btn.dataset.dir, 10);
+            var val = (parseInt(input.value, 10) || 0) + dir;
+            input.value = clamp(val, parseInt(input.min, 10), parseInt(input.max, 10));
+            applyInputs();
+          });
+        });
+
+        /* Manual input */
+        [$inPomo, $inShort, $inLong].forEach(function (el) {
+          el.addEventListener("change", applyInputs);
+        });
+
+        /* Volume */
+        $volRange.addEventListener("input", function () {
+          volume = parseInt($volRange.value, 10) / 100;
+          $volN.textContent = $volRange.value;
+          saveCfg();
+        });
+
+        /* Test alarm */
+        document.getElementById("btnTestAlarm").addEventListener("click", fireAlarm);
+
+        /* Keyboard shortcuts */
+        document.addEventListener("keydown", function (e) {
+          if (e.target.tagName === "INPUT") return;
+          switch (e.code) {
+            case "Space":
+              e.preventDefault();
+              running ? stop() : start();
+              break;
+            case "KeyR":
+              if (!e.ctrlKey && !e.metaKey) reset();
+              break;
+            case "Digit1": setMode("pomodoro"); break;
+            case "Digit2": setMode("short"); break;
+            case "Digit3": setMode("long"); break;
+          }
+        });
+      }
+
+      /* ---- Boot ---- */
+      boot();
+    })();
+  </script>
+</body>
+</html>
