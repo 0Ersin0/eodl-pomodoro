@@ -13,53 +13,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="pomodorƎ — Air-gapped, privacy-first Pomodoro timer by EO Digital Lab.">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; media-src 'self' data:; img-src 'self' data:; frame-ancestors 'none';">
   <title>pomodorƎ</title>
   <style>
     /* ==================================================================
-       pomodorƎ  ·  EO Digital Lab
+       pomodorƎ  ·  EO Digital Lab  ·  v2.0.0
        Design System: Cybersecurity Laboratory Dark Theme
+       Themes: Ersin Ö. Modu (Default Dark) · Nisa G. Modu
        Stack: Pure HTML5 + CSS3 + Vanilla JS (Zero Dependencies)
        ================================================================== */
 
     /* — Reset — */
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* — Design Tokens — */
+    /* — Design Tokens (Ersin Ö. Modu / Default Dark) — */
     :root {
-      /* Surfaces */
       --bg-abyss: #050816;
       --bg-surface: #0f172a;
       --bg-elevated: #1e293b;
       --bg-hover: #263348;
-
-      /* Text Hierarchy */
       --text-ice: #f1f5f9;
       --text-muted: #94a3b8;
       --text-dim: #475569;
       --text-ghost: #334155;
-
-      /* Accent: Work (Neon Red) */
-      --neon-red: #ff3131;
-      --neon-red-50: rgba(255, 49, 49, 0.50);
-      --neon-red-20: rgba(255, 49, 49, 0.20);
-      --neon-red-10: rgba(255, 49, 49, 0.10);
-      --neon-red-06: rgba(255, 49, 49, 0.06);
-
-      /* Accent: Break (Electric Cyan) */
-      --cyan: #00f2fe;
-      --cyan-50: rgba(0, 242, 254, 0.50);
-      --cyan-20: rgba(0, 242, 254, 0.20);
-      --cyan-10: rgba(0, 242, 254, 0.10);
-      --cyan-06: rgba(0, 242, 254, 0.06);
-
-      /* Chrome */
+      --accent: #ff3131;
+      --accent-50: rgba(255, 49, 49, 0.50);
+      --accent-20: rgba(255, 49, 49, 0.20);
+      --accent-10: rgba(255, 49, 49, 0.10);
+      --accent-06: rgba(255, 49, 49, 0.06);
+      --break: #00f2fe;
+      --break-50: rgba(0, 242, 254, 0.50);
+      --break-20: rgba(0, 242, 254, 0.20);
+      --break-10: rgba(0, 242, 254, 0.10);
+      --break-06: rgba(0, 242, 254, 0.06);
       --border: rgba(148, 163, 184, 0.08);
       --border-lit: rgba(148, 163, 184, 0.15);
       --radius: 14px;
@@ -69,670 +55,466 @@
       --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.50);
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --speed: 0.22s;
-
-      /* Typography */
       --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* — Base — */
-    html {
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
+    /* ======== THEME: Nisa G. Modu ======== */
+    body.theme-nisa {
+      --bg-abyss: #120812;
+      --bg-surface: #1a0f1a;
+      --bg-elevated: #2a1528;
+      --bg-hover: #3a1d36;
+      --accent: #ff6b9d;
+      --accent-50: rgba(255, 107, 157, 0.50);
+      --accent-20: rgba(255, 107, 157, 0.20);
+      --accent-10: rgba(255, 107, 157, 0.10);
+      --accent-06: rgba(255, 107, 157, 0.06);
+      --break: #c084fc;
+      --break-50: rgba(192, 132, 252, 0.50);
+      --break-20: rgba(192, 132, 252, 0.20);
+      --break-10: rgba(192, 132, 252, 0.10);
+      --break-06: rgba(192, 132, 252, 0.06);
+      --text-ghost: #3a1a30;
+      --border: rgba(255, 107, 157, 0.06);
+      --border-lit: rgba(255, 107, 157, 0.12);
     }
 
+    /* — Base — */
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
     body {
-      font-family: var(--font-ui);
-      background: var(--bg-abyss);
-      color: var(--text-ice);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
+      font-family: var(--font-ui); background: var(--bg-abyss); color: var(--text-ice);
+      min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+      transition: background 0.5s var(--ease);
     }
 
     /* — Ambient Glow — */
     body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 12% 18%, var(--neon-red-06) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 88% 78%, var(--cyan-06) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+      content: ""; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 12% 18%, var(--accent-06) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 80% at 88% 78%, var(--break-06) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
       animation: ambientPulse 28s ease-in-out infinite alternate;
+      transition: background 0.5s var(--ease);
     }
+    @keyframes ambientPulse { 0% { opacity: 1; } 50% { opacity: 0.55; } 100% { opacity: 1; } }
 
-    @keyframes ambientPulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.55; }
-      100% { opacity: 1; }
-    }
-
-    /* Scanline texture */
+    /* Scanline */
     body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        transparent 2px,
-        rgba(0, 0, 0, 0.03) 2px,
-        rgba(0, 0, 0, 0.03) 4px
-      );
-      pointer-events: none;
-      z-index: 0;
+      content: ""; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none; z-index: 0;
     }
 
-    /* — Layout Shell — */
+    /* — Shell — */
     .shell {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
+      position: relative; z-index: 1; display: flex; flex-direction: column;
+      align-items: center; min-height: 100vh; width: 100%; max-width: 540px;
+      margin: 0 auto; padding: 0 1.25rem;
     }
 
     /* ==================================================================
        HEADER
        ================================================================== */
     .header {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem 0 1rem;
-      border-bottom: 1px solid var(--border);
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--border);
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      user-select: none;
-    }
-
-    /* Pure-CSS geometric logo token */
-    .logo-mark {
-      width: 30px;
-      height: 30px;
-      position: relative;
-      flex-shrink: 0;
-    }
-
+    .brand { display: flex; align-items: center; gap: 0.65rem; user-select: none; }
+    .logo-mark { width: 30px; height: 30px; position: relative; flex-shrink: 0; }
     .logo-mark::before {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border: 2px solid var(--neon-red);
-      border-radius: 3px;
-      transform: rotate(45deg);
-      box-shadow: 0 0 10px var(--neon-red-20);
+      content: ""; position: absolute; inset: 2px; border: 2px solid var(--accent);
+      border-radius: 3px; transform: rotate(45deg); box-shadow: 0 0 10px var(--accent-20);
+      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
     }
-
     .logo-mark::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 7px;
-      height: 7px;
-      background: var(--neon-red);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 12px var(--neon-red-50);
+      content: ""; position: absolute; top: 50%; left: 50%; width: 7px; height: 7px;
+      background: var(--accent); border-radius: 50%; transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px var(--accent-50);
+      transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease);
     }
-
-    .brand-name {
-      font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1;
-    }
-
+    .brand-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1; }
     .brand-name .accent {
-      color: var(--neon-red);
-      text-shadow: 0 0 14px var(--neon-red-20);
+      color: var(--accent); text-shadow: 0 0 14px var(--accent-20);
+      transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease);
     }
-
     .ver {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      color: var(--text-ghost);
-      letter-spacing: 0.05em;
-      padding: 0.2rem 0.45rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xs);
-      user-select: none;
+      font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-ghost);
+      letter-spacing: 0.05em; padding: 0.2rem 0.45rem; border: 1px solid var(--border);
+      border-radius: var(--radius-xs); user-select: none;
     }
 
     /* ==================================================================
        MAIN
        ================================================================== */
     .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      gap: 1.6rem;
-      padding: 2rem 0;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; width: 100%; gap: 1.4rem; padding: 2rem 0;
     }
 
     /* — Mode Tabs — */
     .tabs {
-      display: flex;
-      gap: 4px;
-      background: var(--bg-surface);
-      padding: 4px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 100%;
-      max-width: 400px;
+      display: flex; gap: 4px; background: var(--bg-surface); padding: 4px;
+      border-radius: var(--radius); border: 1px solid var(--border);
+      width: 100%; max-width: 400px; transition: background 0.4s var(--ease);
     }
-
     .tab {
-      flex: 1;
-      padding: 0.55rem 0.2rem;
-      border: none;
-      border-radius: calc(var(--radius) - 4px);
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-ui);
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--speed) var(--ease);
-      white-space: nowrap;
-      letter-spacing: 0.01em;
+      flex: 1; padding: 0.55rem 0.2rem; border: none; border-radius: calc(var(--radius) - 4px);
+      background: transparent; color: var(--text-muted); font-family: var(--font-ui);
+      font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all var(--speed) var(--ease);
+      white-space: nowrap; letter-spacing: 0.01em;
     }
-
-    .tab:hover {
-      color: var(--text-ice);
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .tab.active {
-      color: var(--text-ice);
-      background: var(--bg-elevated);
-      font-weight: 600;
-    }
-
-    .tab.active[data-mode="pomodoro"] {
-      box-shadow: 0 0 14px var(--neon-red-10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-
+    .tab:hover { color: var(--text-ice); background: rgba(255,255,255,0.03); }
+    .tab.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 600; }
+    .tab.active[data-mode="pomodoro"] { box-shadow: 0 0 14px var(--accent-10), inset 0 1px 0 rgba(255,255,255,0.04); }
     .tab.active[data-mode="short"],
-    .tab.active[data-mode="long"] {
-      box-shadow: 0 0 14px var(--cyan-10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
+    .tab.active[data-mode="long"] { box-shadow: 0 0 14px var(--break-10), inset 0 1px 0 rgba(255,255,255,0.04); }
 
-    /* — Timer Card — */
+    /* ==================================================================
+       TIMER CARD
+       ================================================================== */
     .card {
-      width: 100%;
-      max-width: 400px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem 2rem 1.75rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.75rem;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      width: 100%; max-width: 400px; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 2.5rem 2rem 1.75rem; display: flex; flex-direction: column;
+      align-items: center; gap: 1.75rem; box-shadow: var(--shadow);
+      position: relative; overflow: hidden; transition: background 0.4s var(--ease);
     }
-
-    /* Top accent hairline */
     .card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 8%;
-      right: 8%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon-red-20), transparent);
+      content: ""; position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-20), transparent);
       transition: background 0.4s var(--ease);
     }
+    .card.is-break::before { background: linear-gradient(90deg, transparent, var(--break-20), transparent); }
 
-    .card.is-break::before {
-      background: linear-gradient(90deg, transparent, var(--cyan-20), transparent);
+    /* — Nisa G. Modu: Decorative SVGs (Hidden by Default) — */
+    .nisa-deco { display: none; position: absolute; pointer-events: none; z-index: 2; }
+    body.theme-nisa .nisa-deco { display: block; }
+    .nisa-kitty { top: 10px; left: 12px; width: 42px; height: 42px; opacity: 0.85; }
+    .nisa-unicorn { top: 8px; right: 12px; width: 44px; height: 44px; opacity: 0.85; }
+    .nisa-bow-center {
+      top: -1px; left: 50%; transform: translateX(-50%); width: 36px; height: 20px; opacity: 0.9;
+      animation: bowFloat 3s ease-in-out infinite alternate;
+    }
+    @keyframes bowFloat { 0% { transform: translateX(-50%) translateY(0); } 100% { transform: translateX(-50%) translateY(-2px); } }
+
+    /* Sparkle particles (Nisa only) */
+    .nisa-sparkles { display: none; position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    body.theme-nisa .nisa-sparkles { display: block; }
+    .sparkle {
+      position: absolute; width: 3px; height: 3px; border-radius: 50%;
+      background: var(--accent-50); animation: sparkleFloat 4s ease-in-out infinite;
+    }
+    .sparkle:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 60%; right: 10%; animation-delay: 1.2s; animation-duration: 3.5s; }
+    .sparkle:nth-child(3) { top: 80%; left: 20%; animation-delay: 2.4s; animation-duration: 5s; }
+    .sparkle:nth-child(4) { top: 25%; right: 18%; animation-delay: 0.8s; animation-duration: 4.2s; }
+    .sparkle:nth-child(5) { top: 45%; left: 85%; animation-delay: 1.8s; animation-duration: 3.8s; }
+    @keyframes sparkleFloat {
+      0%, 100% { opacity: 0; transform: scale(0.5) translateY(0); }
+      50% { opacity: 1; transform: scale(1.2) translateY(-8px); }
     }
 
     /* — Countdown — */
-    .clock-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 0;
-    }
-
+    .clock-zone { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 0; }
     .clock {
-      font-family: var(--font-mono);
-      font-size: 5.2rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      line-height: 1;
-      color: var(--neon-red);
-      text-shadow: 0 0 28px var(--neon-red-20), 0 0 56px var(--neon-red-10);
-      font-variant-numeric: tabular-nums;
-      min-width: 5ch;
-      text-align: center;
-      transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease);
-      user-select: none;
+      font-family: var(--font-mono); font-size: 5.2rem; font-weight: 700;
+      letter-spacing: 0.05em; line-height: 1; color: var(--accent);
+      text-shadow: 0 0 28px var(--accent-20), 0 0 56px var(--accent-10);
+      font-variant-numeric: tabular-nums; min-width: 5ch; text-align: center;
+      transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease); user-select: none;
     }
+    .clock.break-glow { color: var(--break); text-shadow: 0 0 28px var(--break-20), 0 0 56px var(--break-10); }
+    .clock-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500; }
 
-    .clock.break-glow {
-      color: var(--cyan);
-      text-shadow: 0 0 28px var(--cyan-20), 0 0 56px var(--cyan-10);
+    /* — Motivational Quote — */
+    .motivational-quote {
+      display: none; width: 100%; text-align: center; font-size: 0.72rem;
+      color: var(--text-ice); font-style: italic; line-height: 1.5;
+      padding: 0 1rem; opacity: 0; transition: opacity 0.5s var(--ease);
+      text-shadow: 0 0 8px var(--accent-20); margin-top: -0.5rem;
     }
-
-    .clock-label {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      font-weight: 500;
-    }
+    .motivational-quote.visible { opacity: 1; }
+    body.theme-nisa .motivational-quote { display: block; }
 
     /* — Progress Bar — */
-    .progress-track {
-      width: 100%;
-      height: 3px;
-      background: var(--bg-elevated);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
+    .progress-track { width: 100%; height: 3px; background: var(--bg-elevated); border-radius: 2px; overflow: hidden; }
     .progress-bar {
-      height: 100%;
-      width: 100%;
-      background: var(--neon-red);
-      border-radius: 2px;
+      height: 100%; width: 100%; background: var(--accent); border-radius: 2px;
       transition: width 0.9s var(--ease), background 0.4s var(--ease);
-      box-shadow: 0 0 8px var(--neon-red-20);
-      transform-origin: left;
+      box-shadow: 0 0 8px var(--accent-20); transform-origin: left;
     }
-
-    .progress-bar.break-bar {
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan-20);
-    }
+    .progress-bar.break-bar { background: var(--break); box-shadow: 0 0 8px var(--break-20); }
 
     /* — Controls — */
-    .controls {
-      display: flex;
-      gap: 0.6rem;
-      width: 100%;
-      justify-content: center;
-    }
-
+    .controls { display: flex; gap: 0.6rem; width: 100%; justify-content: center; }
     .ctl {
-      padding: 0.65rem 1.5rem;
-      border: 1px solid var(--border-lit);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.83rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--speed) var(--ease);
-      user-select: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      letter-spacing: 0.02em;
+      padding: 0.65rem 1.5rem; border: 1px solid var(--border-lit); border-radius: var(--radius-sm);
+      font-family: var(--font-ui); font-size: 0.83rem; font-weight: 600; cursor: pointer;
+      transition: all var(--speed) var(--ease); user-select: none;
+      display: inline-flex; align-items: center; gap: 0.4rem; letter-spacing: 0.02em;
     }
-
-    .ctl-icon {
-      font-size: 0.92rem;
-      line-height: 1;
-    }
-
-    /* Start button */
+    .ctl-icon { font-size: 0.92rem; line-height: 1; }
     .ctl--go {
-      background: var(--neon-red);
-      color: #fff;
-      border-color: var(--neon-red);
-      box-shadow: 0 2px 14px var(--neon-red-20), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+      background: var(--accent); color: #fff; border-color: var(--accent);
+      box-shadow: 0 2px 14px var(--accent-20), inset 0 1px 0 rgba(255,255,255,0.10);
     }
-
-    .ctl--go:hover {
-      background: #e42b2b;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 22px var(--neon-red-20), inset 0 1px 0 rgba(255, 255, 255, 0.10);
-    }
-
-    .ctl--go:active {
-      transform: translateY(0);
-    }
-
-    .ctl--go.paused {
-      background: var(--bg-elevated);
-      color: var(--text-ice);
-      border-color: var(--border-lit);
-      box-shadow: var(--shadow);
-    }
-
-    .ctl--go.paused:hover {
-      background: var(--bg-hover);
-    }
-
-    /* Ghost button */
-    .ctl--ghost {
-      background: var(--bg-abyss);
-      color: var(--text-muted);
-      border-color: var(--border);
-    }
-
-    .ctl--ghost:hover {
-      color: var(--text-ice);
-      border-color: var(--border-lit);
-      background: var(--bg-surface);
-      transform: translateY(-1px);
-    }
-
-    .ctl--ghost:active {
-      transform: translateY(0);
-    }
+    .ctl--go:hover { filter: brightness(0.9); transform: translateY(-1px); box-shadow: 0 4px 22px var(--accent-20); }
+    .ctl--go:active { transform: translateY(0); }
+    .ctl--go.paused { background: var(--bg-elevated); color: var(--text-ice); border-color: var(--border-lit); box-shadow: var(--shadow); }
+    .ctl--go.paused:hover { background: var(--bg-hover); }
+    .ctl--ghost { background: var(--bg-abyss); color: var(--text-muted); border-color: var(--border); }
+    .ctl--ghost:hover { color: var(--text-ice); border-color: var(--border-lit); background: var(--bg-surface); transform: translateY(-1px); }
+    .ctl--ghost:active { transform: translateY(0); }
 
     /* — Session Dots — */
-    .sessions {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
+    .sessions { display: flex; align-items: center; gap: 0.4rem; }
     .pip {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--bg-elevated);
-      border: 1.5px solid var(--text-ghost);
-      transition: all var(--speed) var(--ease);
+      width: 8px; height: 8px; border-radius: 50%; background: var(--bg-elevated);
+      border: 1.5px solid var(--text-ghost); transition: all var(--speed) var(--ease);
+    }
+    .pip.lit { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-20); }
+    .session-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ghost); margin-left: 0.35rem; }
+
+    /* ==================================================================
+       STATS & ACHIEVEMENT PANEL
+       ================================================================== */
+    .stats-panel {
+      width: 100%; max-width: 400px; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1rem 1.2rem; box-shadow: var(--shadow);
+      transition: background 0.4s var(--ease), border-color 0.4s var(--ease);
+    }
+    .stats-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+    }
+    .stats-title { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
+    .stats-toggle-btn {
+      background: none; border: none; color: var(--text-ghost); font-size: 0.62rem;
+      cursor: pointer; font-family: var(--font-ui); transition: color var(--speed) var(--ease);
+      padding: 0.15rem 0.3rem;
+    }
+    .stats-toggle-btn:hover { color: var(--text-muted); }
+
+    /* Achievement row */
+    .achieve-row { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.7rem; }
+    .achieve-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; transition: transform 0.4s var(--ease); }
+    .achieve-icon.glow { animation: achieveGlow 2s ease-in-out infinite alternate; }
+    @keyframes achieveGlow {
+      0% { transform: scale(1); filter: drop-shadow(0 0 4px var(--accent-20)); }
+      100% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-50)); }
+    }
+    .achieve-body { flex: 1; min-width: 0; }
+    .achieve-title { font-size: 0.72rem; font-weight: 600; color: var(--text-ice); margin-bottom: 0.1rem; }
+    .achieve-sub { font-size: 0.6rem; color: var(--text-muted); }
+    .achieve-bar-track { width: 100%; height: 3px; background: var(--bg-elevated); border-radius: 2px; overflow: hidden; margin-top: 0.35rem; }
+    .achieve-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.6s var(--ease); box-shadow: 0 0 6px var(--accent-20); }
+
+    /* Today stats row */
+    .today-row {
+      display: flex; gap: 0.5rem; margin-bottom: 0.7rem;
+      padding: 0.55rem 0.7rem; background: var(--bg-elevated); border-radius: var(--radius-xs);
+    }
+    .today-stat { flex: 1; text-align: center; }
+    .today-val { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--accent); line-height: 1.3; }
+    .today-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* 7-Day Log (collapsible) */
+    .log-section { display: none; }
+    .log-section.open { display: block; animation: cfgReveal 0.3s var(--ease); }
+    .log-title { font-size: 0.6rem; font-weight: 600; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+    .log-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .log-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.62rem; color: var(--text-muted); padding: 0.3rem 0.4rem;
+      border-radius: var(--radius-xs); transition: background var(--speed) var(--ease);
+    }
+    .log-item:hover { background: var(--bg-elevated); }
+    .log-date { font-weight: 500; }
+    .log-val { font-family: var(--font-mono); color: var(--text-ghost); font-size: 0.6rem; }
+
+    /* Lifetime Signature Not Modülü */
+    .pro-note {
+      font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-ghost);
+      line-height: 1.5; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border);
+      text-align: left; opacity: 0.8;
     }
 
-    .pip.lit {
-      background: var(--neon-red);
-      border-color: var(--neon-red);
-      box-shadow: 0 0 8px var(--neon-red-20);
+    /* ==================================================================
+       THEME SELECTOR
+       ================================================================== */
+    .theme-selector {
+      width: 100%; max-width: 400px; display: flex; gap: 4px;
+      background: var(--bg-surface); padding: 4px; border-radius: var(--radius);
+      border: 1px solid var(--border); transition: background 0.4s var(--ease);
     }
-
-    .session-n {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-ghost);
-      margin-left: 0.35rem;
+    .theme-btn {
+      flex: 1; padding: 0.48rem 0.3rem; border: none; border-radius: calc(var(--radius) - 4px);
+      background: transparent; color: var(--text-muted); font-family: var(--font-ui);
+      font-size: 0.72rem; font-weight: 500; cursor: pointer; transition: all var(--speed) var(--ease);
+      white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 0.3rem;
     }
+    .theme-btn:hover { color: var(--text-ice); background: rgba(255,255,255,0.03); }
+    .theme-btn.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 600; box-shadow: 0 0 12px var(--accent-10); }
+    .theme-btn-emoji { font-size: 0.85rem; }
 
     /* ==================================================================
        SETTINGS PANEL
        ================================================================== */
     .cfg-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xs);
-      color: var(--text-ghost);
-      font-family: var(--font-ui);
-      font-size: 0.7rem;
-      padding: 0.35rem 0.65rem;
-      cursor: pointer;
-      transition: all var(--speed) var(--ease);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      letter-spacing: 0.03em;
+      background: none; border: 1px solid var(--border); border-radius: var(--radius-xs);
+      color: var(--text-ghost); font-family: var(--font-ui); font-size: 0.7rem;
+      padding: 0.35rem 0.65rem; cursor: pointer; transition: all var(--speed) var(--ease);
+      display: inline-flex; align-items: center; gap: 0.3rem; letter-spacing: 0.03em;
     }
-
-    .cfg-toggle:hover {
-      color: var(--text-muted);
-      border-color: var(--border-lit);
-      background: var(--bg-surface);
-    }
-
+    .cfg-toggle:hover { color: var(--text-muted); border-color: var(--border-lit); background: var(--bg-surface); }
     .cfg-panel {
-      width: 100%;
-      max-width: 400px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.4rem;
-      box-shadow: var(--shadow);
-      display: none;
+      width: 100%; max-width: 400px; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.4rem; box-shadow: var(--shadow); display: none;
+      transition: background 0.4s var(--ease);
     }
-
-    .cfg-panel.open {
-      display: block;
-      animation: cfgReveal 0.3s var(--ease);
-    }
-
-    @keyframes cfgReveal {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .cfg-title {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--text-ghost);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-bottom: 0.9rem;
-    }
-
-    .cfg-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.7rem;
-    }
-
-    .cfg-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .cfg-group label {
-      font-size: 0.62rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      text-align: center;
-    }
-
-    .stepper {
-      display: flex;
-      align-items: center;
-      background: var(--bg-abyss);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xs);
-      overflow: hidden;
-    }
-
+    .cfg-panel.open { display: block; animation: cfgReveal 0.3s var(--ease); }
+    @keyframes cfgReveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .cfg-title { font-size: 0.68rem; font-weight: 600; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.9rem; }
+    .cfg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+    .cfg-group { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .cfg-group label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; text-align: center; }
+    .stepper { display: flex; align-items: center; background: var(--bg-abyss); border: 1px solid var(--border); border-radius: var(--radius-xs); overflow: hidden; }
     .stepper-btn {
-      width: 30px;
-      height: 34px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all var(--speed) var(--ease);
-      font-family: var(--font-mono);
+      width: 30px; height: 34px; background: transparent; border: none; color: var(--text-muted);
+      font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all var(--speed) var(--ease); font-family: var(--font-mono);
     }
-
-    .stepper-btn:hover {
-      background: var(--bg-elevated);
-      color: var(--text-ice);
-    }
-
+    .stepper-btn:hover { background: var(--bg-elevated); color: var(--text-ice); }
     .stepper-input {
-      width: 40px;
-      height: 34px;
-      background: transparent;
-      border: none;
-      border-left: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      color: var(--text-ice);
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      text-align: center;
-      outline: none;
-      appearance: textfield;
+      width: 40px; height: 34px; background: transparent; border: none;
+      border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+      color: var(--text-ice); font-family: var(--font-mono); font-size: 0.88rem;
+      text-align: center; outline: none; appearance: textfield;
     }
-
     .stepper-input::-webkit-inner-spin-button,
-    .stepper-input::-webkit-outer-spin-button {
-      appearance: none;
-      margin: 0;
-    }
-
-    .stepper-input:focus {
-      background: rgba(255, 49, 49, 0.04);
-    }
-
-    /* Volume */
-    .vol-row {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 1rem;
-      padding-top: 0.9rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .vol-label {
-      font-size: 0.62rem;
-      color: var(--text-ghost);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      white-space: nowrap;
-    }
-
-    .vol-range {
-      appearance: none;
-      flex: 1;
-      height: 3px;
-      background: var(--bg-elevated);
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .vol-range::-webkit-slider-thumb {
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--neon-red);
-      border: 2px solid var(--bg-surface);
-      cursor: pointer;
-      box-shadow: 0 0 6px var(--neon-red-20);
-    }
-
-    .vol-range::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--neon-red);
-      border: 2px solid var(--bg-surface);
-      cursor: pointer;
-      box-shadow: 0 0 6px var(--neon-red-20);
-    }
-
-    .vol-n {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-ghost);
-      min-width: 2.2ch;
-      text-align: right;
-    }
-
-    .cfg-foot {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.4rem;
-      margin-top: 0.9rem;
-    }
-
-    .ctl-xs {
-      padding: 0.3rem 0.7rem;
-      font-size: 0.7rem;
-      border-radius: var(--radius-xs);
-    }
+    .stepper-input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+    .stepper-input:focus { background: var(--accent-06); }
+    .vol-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+    .vol-label { font-size: 0.62rem; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .vol-range { appearance: none; flex: 1; height: 3px; background: var(--bg-elevated); border-radius: 2px; outline: none; cursor: pointer; }
+    .vol-range::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-surface); cursor: pointer; box-shadow: 0 0 6px var(--accent-20); }
+    .vol-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-surface); cursor: pointer; box-shadow: 0 0 6px var(--accent-20); }
+    .vol-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ghost); min-width: 2.2ch; text-align: right; }
+    .cfg-foot { display: flex; justify-content: flex-end; gap: 0.4rem; margin-top: 0.9rem; }
+    .ctl-xs { padding: 0.3rem 0.7rem; font-size: 0.7rem; border-radius: var(--radius-xs); }
 
     /* ==================================================================
        TOAST
        ================================================================== */
     .toast {
-      position: fixed;
-      top: 1.2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(-140%);
-      background: var(--bg-surface);
-      border: 1px solid var(--border-lit);
-      border-radius: var(--radius-sm);
-      padding: 0.65rem 1.3rem;
-      box-shadow: var(--shadow-lg);
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      color: var(--text-ice);
-      white-space: nowrap;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: fixed; top: 1.2rem; left: 50%; transform: translateX(-50%) translateY(-140%);
+      background: var(--bg-surface); border: 1px solid var(--border-lit);
+      border-radius: var(--radius-sm); padding: 0.65rem 1.3rem; box-shadow: var(--shadow-lg);
+      z-index: 500; display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--text-ice); white-space: nowrap;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s var(--ease);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { font-size: 1rem; }
+
+    /* ==================================================================
+       CELEBRATION MODAL
+       ================================================================== */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(5, 8, 22, 0.80); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    body.theme-nisa .modal-overlay { background: rgba(18, 8, 18, 0.85); }
+
+    .modal-card {
+      background: var(--bg-surface); border: 1px solid var(--border-lit);
+      border-radius: var(--radius); padding: 2.5rem 2rem 2rem;
+      max-width: 380px; width: 90%; text-align: center;
+      box-shadow: var(--shadow-lg), 0 0 60px var(--accent-10);
+      position: relative; overflow: hidden;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s var(--ease);
+    }
+    .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
+    .modal-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--break), var(--accent));
+      background-size: 200% 100%; animation: modalStripe 3s linear infinite;
+    }
+    @keyframes modalStripe { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+
+    .modal-emoji { font-size: 4rem; line-height: 1; margin-bottom: 1rem; animation: emojiPulse 1.5s ease-in-out infinite alternate; display: inline-block; }
+    @keyframes emojiPulse { 0% { transform: scale(1) rotate(-3deg); } 100% { transform: scale(1.15) rotate(3deg); } }
+
+    /* Floating hearts (Nisa modal only) */
+    .modal-hearts { display: none; position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    body.theme-nisa .modal-hearts { display: block; }
+    .m-heart { position: absolute; font-size: 1.2rem; opacity: 0; animation: heartRise 3s ease-in infinite; }
+    .m-heart:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .m-heart:nth-child(2) { left: 25%; animation-delay: 0.6s; font-size: 0.9rem; }
+    .m-heart:nth-child(3) { left: 45%; animation-delay: 1.2s; }
+    .m-heart:nth-child(4) { left: 65%; animation-delay: 0.3s; font-size: 1rem; }
+    .m-heart:nth-child(5) { left: 80%; animation-delay: 0.9s; font-size: 0.8rem; }
+    .m-heart:nth-child(6) { left: 55%; animation-delay: 1.8s; font-size: 1.1rem; }
+    @keyframes heartRise {
+      0% { bottom: -10%; opacity: 0; transform: scale(0.5) rotate(0deg); }
+      30% { opacity: 0.8; }
+      100% { bottom: 110%; opacity: 0; transform: scale(1) rotate(20deg); }
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
+    .modal-title { font-size: 1.3rem; font-weight: 700; color: var(--text-ice); margin-bottom: 0.6rem; }
+    .modal-badge {
+      display: inline-block; background: linear-gradient(135deg, var(--accent-10), var(--accent-06));
+      border: 1px solid var(--accent-20); border-radius: 999px; padding: 0.45rem 1.2rem;
+      font-size: 0.78rem; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-20); margin-bottom: 1.2rem;
     }
+    .modal-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .modal-close-btn {
+      padding: 0.65rem 1.8rem; background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; transition: all var(--speed) var(--ease);
+      box-shadow: 0 2px 14px var(--accent-20);
+    }
+    .modal-close-btn:hover { filter: brightness(0.9); transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-20); }
+    .modal-close-btn:active { transform: translateY(0); }
 
-    .toast-icon {
-      font-size: 1rem;
+    /* ==================================================================
+       SILENT SIGNAL — Edge Flash
+       ================================================================== */
+    .edge-flash {
+      position: fixed; inset: 0; z-index: 900; pointer-events: none;
+      border: 3px solid transparent; opacity: 0;
+    }
+    .edge-flash.firing {
+      border-color: var(--accent); box-shadow: inset 0 0 40px var(--accent-20), 0 0 40px var(--accent-10);
+      animation: edgePulse 1.8s ease-out forwards;
+    }
+    @keyframes edgePulse {
+      0% { opacity: 0.9; } 20% { opacity: 0; } 35% { opacity: 0.7; }
+      55% { opacity: 0; } 70% { opacity: 0.5; } 100% { opacity: 0; }
     }
 
     /* ==================================================================
-       FOOTER
+       FOOTER (Enhanced EO Digital Lab Branding)
        ================================================================== */
     .footer {
-      width: 100%;
-      text-align: center;
-      padding: 1.4rem 0 1.6rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      width: 100%; text-align: center; padding: 2rem 0 2.2rem;
+      border-top: 1px solid var(--border); display: flex;
+      flex-direction: column; align-items: center; gap: 0.9rem;
     }
-
-    .footer-line {
-      font-size: 0.66rem;
-      color: var(--text-dim);
-      letter-spacing: 0.02em;
-      line-height: 1.7;
-    }
-
-    .footer-copy {
-      font-size: 0.60rem;
-      color: var(--text-ghost);
-      letter-spacing: 0.02em;
-      line-height: 1.7;
-    }
+    .footer-privacy { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.02em; line-height: 1.7; }
+    .footer-brand { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .footer-brand-name { font-size: 1.05rem; font-weight: 700; color: var(--text-ice); letter-spacing: 0.04em; text-shadow: 0 0 18px rgba(255,255,255,0.06); }
+    .footer-brand-name .footer-accent { color: var(--accent); text-shadow: 0 0 16px var(--accent-20), 0 0 32px var(--accent-10); transition: color 0.4s var(--ease); }
+    .footer-tagline { font-size: 0.58rem; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 500; }
+    .footer-legal { font-size: 0.56rem; color: var(--text-ghost); letter-spacing: 0.02em; line-height: 1.7; margin-top: 0.1rem; }
 
     /* ==================================================================
        RESPONSIVE
@@ -740,42 +522,47 @@
     @media (max-width: 480px) {
       .header { padding: 1.2rem 0 0.75rem; }
       .brand-name { font-size: 1.1rem; }
-      .main { gap: 1.2rem; padding: 1.5rem 0; }
+      .main { gap: 1rem; padding: 1.5rem 0; }
       .clock { font-size: 4rem; }
       .card { padding: 2rem 1.2rem 1.5rem; }
-      .tab { font-size: 0.7rem; padding: 0.5rem 0.15rem; }
+      .tab, .theme-btn { font-size: 0.68rem; padding: 0.45rem 0.1rem; }
       .ctl { padding: 0.55rem 1rem; font-size: 0.78rem; }
       .cfg-grid { gap: 0.5rem; }
+      .modal-card { padding: 2rem 1.5rem 1.5rem; }
+      .modal-emoji { font-size: 3rem; }
+      .nisa-kitty { width: 32px; height: 32px; }
+      .nisa-unicorn { width: 34px; height: 34px; }
     }
-
-    @media (max-width: 340px) {
-      .clock { font-size: 3.2rem; }
-      .cfg-grid { grid-template-columns: 1fr; }
-    }
-
-    /* Reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Focus */
-    :focus-visible {
-      outline: 2px solid var(--neon-red);
-      outline-offset: 2px;
-    }
+    @media (max-width: 340px) { .clock { font-size: 3.2rem; } .cfg-grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   </style>
 </head>
 <body>
+
+  <!-- Edge Flash (Silent Signal) -->
+  <div class="edge-flash" id="edgeFlash"></div>
 
   <!-- Toast -->
   <div class="toast" id="toast">
     <span class="toast-icon" id="toastIcon">🍅</span>
     <span id="toastMsg">Tamamlandı!</span>
+  </div>
+
+  <!-- Celebration Modal -->
+  <div class="modal-overlay" id="celebModal">
+    <div class="modal-card">
+      <!-- Floating hearts (Nisa only) -->
+      <div class="modal-hearts">
+        <span class="m-heart">💖</span><span class="m-heart">💕</span><span class="m-heart">🩷</span>
+        <span class="m-heart">💗</span><span class="m-heart">💖</span><span class="m-heart">🎀</span>
+      </div>
+      <div class="modal-emoji" id="celebEmoji">🔥</div>
+      <h2 class="modal-title" id="celebTitle">Mükemmel Odaklanma!</h2>
+      <div class="modal-badge" id="celebBadge">Derin Odaklanma Ustası</div>
+      <p class="modal-desc" id="celebDesc">4 Pomodoro seansını art arda tamamladın.<br>Bu seviye disiplin ve kararlılık gerektirir. Tebrikler!</p>
+      <button class="modal-close-btn" id="celebClose">Çalışmaya Devam Et</button>
+    </div>
   </div>
 
   <div class="shell">
@@ -786,7 +573,7 @@
         <div class="logo-mark" aria-hidden="true"></div>
         <h1 class="brand-name">pomodor<span class="accent">Ǝ</span></h1>
       </div>
-      <span class="ver">v1.0.0</span>
+      <span class="ver">v2.0.0</span>
     </header>
 
     <!-- ======== MAIN ======== -->
@@ -801,10 +588,79 @@
 
       <!-- Timer Card -->
       <section class="card" id="card" aria-label="Zamanlayıcı">
+
+        <!-- Nisa G. Modu: Hello Kitty (inline SVG — zero outbound) -->
+        <svg class="nisa-deco nisa-kitty" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="22,32 18,8 38,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
+          <polygon points="24,28 22,14 34,25" fill="var(--accent)" opacity="0.55"/>
+          <polygon points="78,32 82,8 62,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
+          <polygon points="76,28 78,14 66,25" fill="var(--accent)" opacity="0.55"/>
+          <ellipse cx="50" cy="55" rx="32" ry="28" fill="#fff" stroke="#555" stroke-width="1.2"/>
+          <ellipse cx="38" cy="52" rx="3.2" ry="3.8" fill="#333"/>
+          <ellipse cx="62" cy="52" rx="3.2" ry="3.8" fill="#333"/>
+          <ellipse cx="50" cy="58" rx="2.2" ry="1.8" fill="#f5a623"/>
+          <line x1="12" y1="50" x2="33" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <line x1="12" y1="57" x2="33" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <line x1="14" y1="64" x2="33" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <line x1="88" y1="50" x2="67" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <line x1="88" y1="57" x2="67" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <line x1="86" y1="64" x2="67" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="25" cy="22" rx="6.5" ry="4.5" fill="var(--accent)" transform="rotate(-20 25 22)"/>
+          <ellipse cx="17" cy="18" rx="5" ry="3.5" fill="var(--accent)" transform="rotate(10 17 18)"/>
+          <circle cx="21" cy="20" r="2" fill="#fff" opacity="0.6"/>
+        </svg>
+
+        <!-- Nisa G. Modu: Unicorn (inline SVG — zero outbound) -->
+        <svg class="nisa-deco nisa-unicorn" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Horn -->
+          <polygon points="50,4 44,30 56,30" fill="#ffd700" stroke="#e6c200" stroke-width="0.8"/>
+          <line x1="47" y1="14" x2="53" y2="14" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+          <line x1="46" y1="20" x2="54" y2="20" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+          <line x1="45.5" y1="26" x2="54.5" y2="26" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+          <!-- Head -->
+          <ellipse cx="50" cy="55" rx="26" ry="30" fill="#fff" stroke="#ddd" stroke-width="1"/>
+          <!-- Ear -->
+          <polygon points="30,28 24,12 38,25" fill="#fff" stroke="#ddd" stroke-width="0.8"/>
+          <polygon points="32,26 28,16 36,24" fill="var(--accent)" opacity="0.3"/>
+          <!-- Eye -->
+          <ellipse cx="56" cy="48" rx="4" ry="4.5" fill="#333"/>
+          <circle cx="57.5" cy="46.5" r="1.2" fill="#fff"/>
+          <!-- Nostril -->
+          <circle cx="62" cy="62" r="1.2" fill="#ddd"/>
+          <!-- Mane -->
+          <path d="M28,32 Q18,42 22,56 Q14,50 18,38 Q10,48 14,34" fill="var(--accent)" opacity="0.5" stroke="none"/>
+          <path d="M24,38 Q16,48 20,60" fill="none" stroke="var(--break)" stroke-width="1.5" opacity="0.4"/>
+          <!-- Sparkle star -->
+          <polygon points="82,18 84,24 90,24 85,28 87,34 82,30 77,34 79,28 74,24 80,24" fill="#ffd700" opacity="0.7">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+          </polygon>
+          <polygon points="18,72 19.5,76 24,76 20.5,78.5 22,83 18,80 14,83 15.5,78.5 12,76 16.5,76" fill="var(--accent)" opacity="0.5">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/>
+          </polygon>
+        </svg>
+
+        <!-- Nisa G. Modu: Ribbon Bow (inline SVG — center top) -->
+        <svg class="nisa-deco nisa-bow-center" viewBox="0 0 60 28" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="20" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(-8 20 12)"/>
+          <ellipse cx="40" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(8 40 12)"/>
+          <circle cx="30" cy="13" r="4" fill="var(--accent)"/>
+          <circle cx="30" cy="13" r="2" fill="#fff" opacity="0.3"/>
+          <path d="M26,17 Q28,26 30,28 Q32,26 34,17" fill="var(--accent)" opacity="0.5"/>
+        </svg>
+
+        <!-- Sparkle particles (Nisa only) -->
+        <div class="nisa-sparkles">
+          <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+          <div class="sparkle"></div><div class="sparkle"></div>
+        </div>
+
         <div class="clock-zone">
           <div class="clock" id="clock" aria-live="polite">25:00</div>
           <span class="clock-label" id="clockLabel">pomodoro</span>
         </div>
+
+        <!-- Motivational Quote (Nisa Only) -->
+        <div class="motivational-quote" id="motivationalQuote"></div>
 
         <div class="progress-track">
           <div class="progress-bar" id="progressBar"></div>
@@ -827,6 +683,56 @@
           <span class="session-n" id="sessionN">0 / 4</span>
         </div>
       </section>
+
+      <!-- Stats & Achievement Panel -->
+      <div class="stats-panel" id="statsPanel">
+        <div class="stats-header">
+          <span class="stats-title" id="statsPanelTitle">📊 Çalışma Logları ve Başarı Durumu</span>
+          <button class="stats-toggle-btn" id="logsToggle" aria-label="Geçmişi göster/gizle">▼ Geçmiş</button>
+        </div>
+
+        <!-- Achievement Row -->
+        <div class="achieve-row">
+          <span class="achieve-icon" id="achieveIcon">🌱</span>
+          <div class="achieve-body">
+            <div class="achieve-title" id="achieveTitle">Gelişiyor</div>
+            <div class="achieve-sub" id="achieveSub">0 / 4 Pomodoro tamamlandı</div>
+            <div class="achieve-bar-track"><div class="achieve-bar-fill" id="achieveBar" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Today Stats -->
+        <div class="today-row">
+          <div class="today-stat">
+            <div class="today-val" id="todaySessions">0</div>
+            <div class="today-label" id="todaySessionsLabel">Bugün Seans</div>
+          </div>
+          <div class="today-stat">
+            <div class="today-val" id="todayHours">0s 0dk</div>
+            <div class="today-label" id="todayHoursLabel">Odaklanma Süresi</div>
+          </div>
+        </div>
+
+        <!-- 7-Day Log (collapsible) -->
+        <div class="log-section" id="logSection">
+          <div class="log-title" id="logSectionTitle">Son 7 Gün</div>
+          <ul class="log-list" id="logList"></ul>
+        </div>
+
+        <!-- Lifetime Signature Note -->
+        <div class="pro-note">
+          // System Status: SECURE<br>
+          // Auth: EO Digital Lab (Ersin)<br>
+          // [PRO_NOTE]: Bu siber krallıkta Nisa'nın harcadığı her emek,<br>
+          // gösterdiği her disiplin geleceğe bırakılmış en güzel log kaydıdır. 🔒🌸
+        </div>
+      </div>
+
+      <!-- Theme Selector -->
+      <nav class="theme-selector" id="themeSelector" aria-label="Arayüz teması">
+        <button class="theme-btn active" data-theme="default"><span class="theme-btn-emoji">🔴</span> Ersin Ö. Modu (Default)</button>
+        <button class="theme-btn" data-theme="nisa"><span class="theme-btn-emoji">🎀</span> Nisa G. Modu</button>
+      </nav>
 
       <!-- Settings Toggle -->
       <button class="cfg-toggle" id="cfgToggle" aria-expanded="false" aria-controls="cfgPanel">⚙ Ayarlar</button>
@@ -874,15 +780,20 @@
 
     <!-- ======== FOOTER ======== -->
     <footer class="footer">
-      <p class="footer-line">Sıfır Çerez • Sıfır Takip • %100 Lokal • 🔒 Verileriniz tarayıcınızdan dışarı çıkmaz.</p>
-      <p class="footer-copy">© 2026 EO Digital Lab. Tüm hakları saklıdır. Apache License 2.0 kapsamında lisanslanmıştır.</p>
+      <p class="footer-privacy">Sıfır Çerez • Sıfır Takip • %100 Lokal • 🔒 Verileriniz tarayıcınızdan dışarı çıkmaz.</p>
+      <div class="footer-brand">
+        <div class="footer-brand-name">EO <span class="footer-accent">Digital</span> Lab</div>
+        <div class="footer-tagline">Software &amp; Cybersecurity Studio</div>
+      </div>
+      <p class="footer-legal">© 2026 EO Digital Lab. Tüm hakları saklıdır. Apache License 2.0 kapsamında lisanslanmıştır.</p>
     </footer>
   </div>
 
   <script>
     /* ==================================================================
-       pomodorƎ · Core Engine
+       pomodorƎ · Core Engine · v2.0.0
        EO Digital Lab — Air-Gapped · Zero Cookies · Zero Tracking
+       Features: Themes · Daily Logs · Achievements · Notifications
        Copyright 2026 EO Digital Lab. Apache License 2.0
        ================================================================== */
     (function () {
@@ -890,9 +801,23 @@
 
       /* ---- Constants ---- */
       var KEY = "pomodore_cfg";
-      var DEFAULTS = { pomodoro: 25, short: 5, long: 15 };
-      var LABELS = { pomodoro: "pomodoro", short: "kısa mola", long: "uzun mola" };
+      var LOG_KEY = "pomodore_daily_logs";
+      var LABELS = { pomodoro: "pomodoro", short: "k\u0131sa mola", long: "uzun mola" };
       var LIMITS = { pomodoro: [1, 120], short: [1, 60], long: [1, 60] };
+      var TR_MONTHS = ["Ocak","\u015Eubat","Mart","Nisan","May\u0131s","Haziran","Temmuz","A\u011Fustos","Eyl\u00FCl","Ekim","Kas\u0131m","Aral\u0131k"];
+
+      var NISA_QUOTES_POMO = [
+        "Sihirli krall\u0131kta odaklanma ba\u015Flad\u0131! Sistem Nisa i\u00E7in en verimli modu optimize ediyor... \uD83C\uDF38",
+        "Gelece\u011Fin b\u00FCy\u00FCk ba\u015Far\u0131lar\u0131 \u015Fu an bu ekranda kodlan\u0131yor. Harikas\u0131n Nisa! \uD83E\uDD84",
+        "EO Digital Lab G\u00FCvenlik Protokol\u00FC: Nisa'n\u0131n hayalleri ve hedefleri tam koruma alt\u0131nda! \uD83D\uDD12\uD83D\uDC96",
+        "Derin odaklanma modu aktif. Bu krall\u0131kta senin disiplinin kurallar\u0131 koyar! \u2728",
+        "K\u00FC\u00E7\u00FCk bir mola \u00F6ncesi harika bir seri. Ad\u0131m ad\u0131m hedeflere... \u2615"
+      ];
+
+      var NISA_QUOTES_BREAK = [
+        "Harika bir seans bitti! \u015Eimdi zihnini dinlendirme ve g\u00FCzel bir kahve alma zaman\u0131 Nisa. \uD83C\uDF38\u2615",
+        "G\u00F6zlerini ekrandan ay\u0131r, derin bir nefes al. Krall\u0131\u011F\u0131n krali\u00E7esi k\u0131sa bir dinlenmeyi hak etti! \uD83D\uDC51\uD83E\uDD84"
+      ];
 
       /* ---- State ---- */
       var mode = "pomodoro";
@@ -903,10 +828,13 @@
       var tick = null;
       var sessions = 0;
       var volume = 0.65;
+      var currentTheme = "default";
+      var dailyLogs = Object.create(null);
 
       /* ---- DOM ---- */
       var $clock = document.getElementById("clock");
       var $label = document.getElementById("clockLabel");
+      var $quote = document.getElementById("motivationalQuote");
       var $bar = document.getElementById("progressBar");
       var $btnGo = document.getElementById("btnGo");
       var $btnReset = document.getElementById("btnReset");
@@ -924,19 +852,45 @@
       var $toast = document.getElementById("toast");
       var $toastIcon = document.getElementById("toastIcon");
       var $toastMsg = document.getElementById("toastMsg");
+      var $achieveIcon = document.getElementById("achieveIcon");
+      var $achieveTitle = document.getElementById("achieveTitle");
+      var $achieveSub = document.getElementById("achieveSub");
+      var $achieveBar = document.getElementById("achieveBar");
+      var $celebModal = document.getElementById("celebModal");
+      var $celebClose = document.getElementById("celebClose");
+      var $celebEmoji = document.getElementById("celebEmoji");
+      var $celebTitle = document.getElementById("celebTitle");
+      var $celebBadge = document.getElementById("celebBadge");
+      var $celebDesc = document.getElementById("celebDesc");
+      var $edgeFlash = document.getElementById("edgeFlash");
+      var $themeBtns = document.querySelectorAll(".theme-btn");
+      var $statsPanelTitle = document.getElementById("statsPanelTitle");
+      var $todaySessions = document.getElementById("todaySessions");
+      var $todayHours = document.getElementById("todayHours");
+      var $todaySessionsLabel = document.getElementById("todaySessionsLabel");
+      var $todayHoursLabel = document.getElementById("todayHoursLabel");
+      var $logSection = document.getElementById("logSection");
+      var $logSectionTitle = document.getElementById("logSectionTitle");
+      var $logList = document.getElementById("logList");
+      var $logsToggle = document.getElementById("logsToggle");
 
       /* ==================================================================
-         INIT
+         BOOT
          ================================================================== */
       function boot() {
         loadCfg();
+        loadLogs();
+        applyTheme(currentTheme);
         render();
         renderPips();
+        renderAchievement();
+        renderTodayStats();
+        renderLogList();
         wireEvents();
         syncTitle();
       }
 
-      /* ---- localStorage ---- */
+      /* ---- Config (localStorage: pomodore_cfg) ---- */
       function loadCfg() {
         try {
           var raw = localStorage.getItem(KEY);
@@ -947,15 +901,14 @@
             dur.long = clamp(d.long != null ? d.long : 15, LIMITS.long[0], LIMITS.long[1]);
             volume = clamp(d.volume != null ? d.volume : 0.65, 0, 1);
             sessions = clamp(d.sessions != null ? d.sessions : 0, 0, 9999);
+            if (d.theme) currentTheme = d.theme;
           }
-        } catch (e) { /* corrupt data — defaults used */ }
-
+        } catch (e) { /* corrupt */ }
         $inPomo.value = dur.pomodoro;
         $inShort.value = dur.short;
         $inLong.value = dur.long;
         $volRange.value = Math.round(volume * 100);
         $volN.textContent = Math.round(volume * 100);
-
         totalSec = dur[mode] * 60;
         remainSec = totalSec;
       }
@@ -963,17 +916,103 @@
       function saveCfg() {
         try {
           localStorage.setItem(KEY, JSON.stringify({
-            pomodoro: dur.pomodoro,
-            short: dur.short,
-            long: dur.long,
-            volume: volume,
-            sessions: sessions
+            pomodoro: dur.pomodoro, short: dur.short, long: dur.long,
+            volume: volume, sessions: sessions, theme: currentTheme
           }));
-        } catch (e) { /* quota exceeded or blocked */ }
+        } catch (e) { /* quota */ }
       }
 
-      function clamp(v, lo, hi) {
-        return Math.max(lo, Math.min(hi, v));
+      function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+      /* ---- Daily Logs (localStorage: pomodore_daily_logs) ---- */
+      function todayKey() {
+        var d = new Date();
+        return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      }
+
+      /* SECURITY FIX: Prevent Prototype Pollution by using Object.create(null) */
+      function loadLogs() {
+        dailyLogs = Object.create(null);
+        try {
+          var raw = localStorage.getItem(LOG_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+              for (var k in parsed) {
+                if (Object.prototype.hasOwnProperty.call(parsed, k) && k !== '__proto__' && k !== 'constructor' && k !== 'prototype') {
+                  dailyLogs[k] = parsed[k];
+                }
+              }
+            }
+          }
+        } catch (e) { /* keep clean Object.create(null) on error */ }
+      }
+
+      function saveLogs() {
+        try { localStorage.setItem(LOG_KEY, JSON.stringify(dailyLogs)); } catch (e) { /* quota */ }
+      }
+
+      function logPomodoro() {
+        var key = todayKey();
+        if (!dailyLogs[key]) dailyLogs[key] = { sessions: 0, minutes: 0 };
+        dailyLogs[key].sessions++;
+        dailyLogs[key].minutes += dur.pomodoro;
+        pruneLogs();
+        saveLogs();
+      }
+
+      function pruneLogs() {
+        var keys = Object.keys(dailyLogs).sort().reverse();
+        if (keys.length > 30) {
+          keys.slice(30).forEach(function (k) { delete dailyLogs[k]; });
+        }
+      }
+
+      /* ==================================================================
+         THEME ENGINE
+         ================================================================== */
+      function applyTheme(name) {
+        currentTheme = name;
+        document.body.classList.remove("theme-nisa");
+        if (name === "nisa") document.body.classList.add("theme-nisa");
+        $themeBtns.forEach(function (btn) { btn.classList.toggle("active", btn.dataset.theme === name); });
+        updateNisaLabels();
+        updateQuoteVisibility();
+        saveCfg();
+      }
+
+      function isNisa() { return currentTheme === "nisa"; }
+
+      function updateNisaLabels() {
+        if (isNisa()) {
+          $statsPanelTitle.textContent = "\uD83D\uDC51 Nisa\u2019n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131 \uD83E\uDD84 Ge\u00E7mi\u015F Loglar\u0131";
+          $todaySessionsLabel.textContent = "\uD83C\uDF38 Sihirli Odaklanma Saati";
+          $todayHoursLabel.textContent = "\u2728 B\u00FCy\u00FCl\u00FC S\u00FCre";
+          $logSectionTitle.textContent = "\uD83C\uDF38 Ge\u00E7mi\u015F B\u00FCy\u00FCleri";
+        } else {
+          $statsPanelTitle.textContent = "\uD83D\uDCCA \u00C7al\u0131\u015Fma Loglar\u0131 ve Ba\u015Far\u0131 Durumu";
+          $todaySessionsLabel.textContent = "Bug\u00FCn Seans";
+          $todayHoursLabel.textContent = "Odaklanma S\u00FCresi";
+          $logSectionTitle.textContent = "Son 7 G\u00FCn";
+        }
+      }
+
+      /* ==================================================================
+         MOTIVATIONAL QUOTES
+         ================================================================== */
+      function updateQuoteText() {
+        if (!isNisa()) return;
+        var arr = mode === "pomodoro" ? NISA_QUOTES_POMO : NISA_QUOTES_BREAK;
+        var randomQuote = arr[Math.floor(Math.random() * arr.length)];
+        $quote.textContent = randomQuote;
+      }
+
+      function updateQuoteVisibility() {
+        if (isNisa() && running) {
+          $quote.classList.add("visible");
+        } else {
+          $quote.classList.remove("visible");
+        }
       }
 
       /* ==================================================================
@@ -983,39 +1022,101 @@
         var m = String(Math.floor(remainSec / 60)).padStart(2, "0");
         var s = String(remainSec % 60).padStart(2, "0");
         $clock.textContent = m + ":" + s;
-
         var isBreak = mode !== "pomodoro";
         $clock.classList.toggle("break-glow", isBreak);
         $card.classList.toggle("is-break", isBreak);
         $bar.classList.toggle("break-bar", isBreak);
         $label.textContent = LABELS[mode];
-
-        var pct = totalSec > 0 ? (remainSec / totalSec) * 100 : 100;
-        $bar.style.width = pct + "%";
-
+        $bar.style.width = (totalSec > 0 ? (remainSec / totalSec) * 100 : 100) + "%";
         syncTitle();
       }
 
       function renderPips() {
         var filled = sessions % 4;
-        $pips.forEach(function (p, i) {
-          p.classList.toggle("lit", i < filled);
-        });
+        $pips.forEach(function (p, i) { p.classList.toggle("lit", i < filled); });
         $sessionN.textContent = sessions + " / 4";
+      }
+
+      function renderAchievement() {
+        var cycleProgress = sessions % 4;
+        var n = isNisa();
+        if (sessions >= 4) {
+          $achieveIcon.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
+          $achieveIcon.classList.add("glow");
+          $achieveTitle.textContent = n ? "Odaklanma Prensesi \u2661" : "Derin Odaklanma Ustas\u0131";
+          if (cycleProgress === 0) {
+            $achieveSub.textContent = sessions + " Pomodoro tamamland\u0131 \u2014 Harika!";
+            $achieveBar.style.width = "100%";
+          } else {
+            $achieveSub.textContent = sessions + " Pomodoro \u2022 " + cycleProgress + "/4 sonraki d\u00F6ng\u00FC";
+            $achieveBar.style.width = (cycleProgress / 4 * 100) + "%";
+          }
+        } else {
+          $achieveIcon.textContent = n ? "\uD83C\uDF38" : "\uD83C\uDF31";
+          $achieveIcon.classList.remove("glow");
+          $achieveTitle.textContent = n ? "Geli\u015Fiyor \u2661" : "Geli\u015Fiyor";
+          $achieveSub.textContent = sessions + " / 4 Pomodoro tamamland\u0131";
+          $achieveBar.style.width = (sessions / 4 * 100) + "%";
+        }
+      }
+
+      function renderTodayStats() {
+        var key = todayKey();
+        var entry = dailyLogs[key] || { sessions: 0, minutes: 0 };
+        $todaySessions.textContent = Number(entry.sessions) || 0;
+        var mins = Number(entry.minutes) || 0;
+        var h = Math.floor(mins / 60);
+        var m = mins % 60;
+        $todayHours.textContent = h + "s " + m + "dk";
+      }
+
+      /* SECURITY FIX: Prevent DOM-based XSS by securely creating elements */
+      function renderLogList() {
+        var today = new Date();
+        $logList.innerHTML = ""; // Clear list securely
+
+        for (var i = 0; i < 7; i++) {
+          var d = new Date(today);
+          d.setDate(d.getDate() - i);
+          var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+          var entry = dailyLogs[key];
+          
+          var dateStr = String(d.getDate()).padStart(2, "0") + " " + TR_MONTHS[d.getMonth()];
+          if (i === 0) dateStr += " (Bug\u00FCn)";
+
+          var li = document.createElement("li");
+          li.className = "log-item";
+
+          var dateSpan = document.createElement("span");
+          dateSpan.className = "log-date";
+          dateSpan.textContent = dateStr; // Safe content injection
+
+          var valSpan = document.createElement("span");
+          valSpan.className = "log-val";
+
+          if (entry && Number(entry.sessions) > 0) {
+            var mins = Number(entry.minutes) || 0;
+            var h = Math.floor(mins / 60);
+            var m = mins % 60;
+            var timeStr = h > 0 ? h + " Saat " + m + " dk" : m + " dk";
+            valSpan.textContent = timeStr + " (" + Number(entry.sessions) + " Seans)"; // Safe and type-coerced
+          } else {
+            valSpan.textContent = "\u2014";
+          }
+
+          li.appendChild(dateSpan);
+          li.appendChild(valSpan);
+          $logList.appendChild(li);
+        }
       }
 
       function syncTitle() {
         var m = String(Math.floor(remainSec / 60)).padStart(2, "0");
         var s = String(remainSec % 60).padStart(2, "0");
         var ts = m + ":" + s;
-
-        if (running) {
-          document.title = "(" + ts + ") pomodor\u018E";
-        } else if (remainSec < totalSec && remainSec > 0) {
-          document.title = "\u23F8 (" + ts + ") pomodor\u018E";
-        } else {
-          document.title = "pomodor\u018E";
-        }
+        if (running) document.title = "(" + ts + ") pomodor\u018E";
+        else if (remainSec < totalSec && remainSec > 0) document.title = "\u23F8 (" + ts + ") pomodor\u018E";
+        else document.title = "pomodor\u018E";
       }
 
       function renderGoBtn() {
@@ -1024,9 +1125,7 @@
           $btnGo.classList.add("paused");
         } else {
           var resumed = remainSec < totalSec && remainSec > 0;
-          $btnGo.innerHTML = resumed
-            ? '<span class="ctl-icon">\u25B6</span> Devam'
-            : '<span class="ctl-icon">\u25B6</span> Ba\u015Flat';
+          $btnGo.innerHTML = resumed ? '<span class="ctl-icon">\u25B6</span> Devam' : '<span class="ctl-icon">\u25B6</span> Ba\u015Flat';
           $btnGo.classList.remove("paused");
         }
       }
@@ -1037,71 +1136,106 @@
       function start() {
         if (running) return;
         running = true;
-        renderGoBtn();
-        syncTitle();
+        updateQuoteText();
+        updateQuoteVisibility();
+        renderGoBtn(); syncTitle();
         tick = setInterval(function () {
           remainSec--;
-          if (remainSec <= 0) {
-            remainSec = 0;
-            stop();
-            onComplete();
-          }
+          if (remainSec <= 0) { remainSec = 0; stop(); onComplete(); }
           render();
         }, 1000);
       }
 
       function stop() {
-        running = false;
-        clearInterval(tick);
-        tick = null;
-        renderGoBtn();
-        syncTitle();
+        running = false; clearInterval(tick); tick = null;
+        updateQuoteVisibility();
+        renderGoBtn(); syncTitle();
       }
 
       function reset() {
-        stop();
-        totalSec = dur[mode] * 60;
-        remainSec = totalSec;
-        render();
-        renderGoBtn();
+        stop(); totalSec = dur[mode] * 60; remainSec = totalSec;
+        render(); renderGoBtn();
       }
 
       function setMode(m) {
         if (m === mode && !running && remainSec === totalSec) return;
-        stop();
-        mode = m;
+        stop(); mode = m;
         $tabs.forEach(function (t) {
-          var isActive = t.dataset.mode === m;
-          t.classList.toggle("active", isActive);
-          t.setAttribute("aria-selected", isActive);
+          var a = t.dataset.mode === m;
+          t.classList.toggle("active", a); t.setAttribute("aria-selected", a);
         });
-        totalSec = dur[mode] * 60;
-        remainSec = totalSec;
-        render();
-        renderGoBtn();
+        totalSec = dur[mode] * 60; remainSec = totalSec;
+        render(); renderGoBtn();
       }
 
       function onComplete() {
         fireAlarm();
+        fireEdgeFlash();
         if (mode === "pomodoro") {
           sessions++;
+          logPomodoro();
           saveCfg();
           renderPips();
-          notify("\uD83C\uDF45", "Pomodoro tamamlandı! Mola zamanı.");
+          renderAchievement();
+          renderTodayStats();
+          renderLogList();
+          if (sessions % 4 === 0) showCelebration();
+          sendNotification("Pomodoro tamamland\u0131!", "Mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
+          notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131! Mola zaman\u0131.");
         } else {
-          notify("\u2705", "Mola bitti! Odaklanma zamanı.");
+          sendNotification("Mola bitti!", "Odaklanma zaman\u0131.");
+          notify("\u2705", "Mola bitti! Odaklanma zaman\u0131.");
         }
       }
 
       /* ==================================================================
-         AUDIO SYNTHESIS — Digital Alarm (AudioContext API)
-         Pattern: 3 × 880 Hz sine pulses, 0.5 s apart, repeated once
-         Zero outbound requests — fully synthesized in-browser.
+         EDGE FLASH (Silent Signal)
+         ================================================================== */
+      function fireEdgeFlash() {
+        $edgeFlash.classList.remove("firing");
+        void $edgeFlash.offsetWidth;
+        $edgeFlash.classList.add("firing");
+        setTimeout(function () { $edgeFlash.classList.remove("firing"); }, 2000);
+      }
+
+      /* ==================================================================
+         DESKTOP NOTIFICATIONS (Web Notifications API — Local Only)
+         ================================================================== */
+      function sendNotification(title, body) {
+        try {
+          if (!("Notification" in window)) return;
+          if (Notification.permission === "granted") {
+            new Notification(title, { body: body, silent: false });
+          } else if (Notification.permission === "default") {
+            Notification.requestPermission().then(function (perm) {
+              if (perm === "granted") new Notification(title, { body: body, silent: false });
+            });
+          }
+        } catch (e) { /* not supported */ }
+      }
+
+      /* ==================================================================
+         CELEBRATION MODAL
+         ================================================================== */
+      function showCelebration() {
+        var n = isNisa();
+        $celebEmoji.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
+        $celebTitle.textContent = n ? "Sihirli Odaklanma Ba\u015Far\u0131yla Tamamland\u0131! \uD83D\uDC51" : "M\u00FCkemmel Odaklanma!";
+        $celebBadge.textContent = n ? "ODAKLANMA PRENSESI \uD83D\uDC51" : "DER\u0130N ODAKLANMA USTASI";
+        $celebDesc.innerHTML = n
+          ? "Bug\u00FCn g\u00F6sterdi\u011Fin disiplin ve odaklanma harikuladeydi. Nisa'n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131'nda yeni bir rekor k\u0131r\u0131ld\u0131! \u015Eimdi hak etti\u011Fin kahve molas\u0131n\u0131 verebilirsin. EO Digital Lab seninle gurur duyuyor! \uD83C\uDF38\uD83E\uDD84"
+          : "4 Pomodoro seans\u0131n\u0131 art arda tamamlad\u0131n.<br>Bu seviye disiplin ve kararl\u0131l\u0131k gerektirir. Tebrikler!";
+        $celebModal.classList.add("active");
+      }
+
+      function hideCelebration() { $celebModal.classList.remove("active"); }
+
+      /* ==================================================================
+         AUDIO SYNTHESIS — AudioContext API (Zero Outbound)
          ================================================================== */
       function fireAlarm() {
         try {
           var ctx = new (window.AudioContext || window.webkitAudioContext)();
-
           function pulse(when, freq, len) {
             var osc = ctx.createOscillator();
             var gain = ctx.createGain();
@@ -1111,72 +1245,52 @@
             gain.gain.linearRampToValueAtTime(volume * 0.45, when + 0.015);
             gain.gain.setValueAtTime(volume * 0.45, when + len - 0.03);
             gain.gain.linearRampToValueAtTime(0, when + len);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(when);
-            osc.stop(when + len);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(when); osc.stop(when + len);
           }
-
           var t0 = ctx.currentTime;
-          /* 3 beeps, 0.5 s apart — repeated after 0.8 s gap */
-          [0.0, 0.5, 1.0, 1.8, 2.3, 2.8].forEach(function (offset) {
-            pulse(t0 + offset, 880, 0.18);
-          });
-
+          [0.0, 0.5, 1.0, 1.8, 2.3, 2.8].forEach(function (o) { pulse(t0 + o, 880, 0.18); });
           setTimeout(function () { ctx.close(); }, 4000);
-        } catch (e) { /* AudioContext not available */ }
+        } catch (e) { /* AudioContext unavailable */ }
       }
 
       /* ==================================================================
          TOAST
          ================================================================== */
       var toastTimer = null;
-
       function notify(icon, msg) {
-        $toastIcon.textContent = icon;
-        $toastMsg.textContent = msg;
-        $toast.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-          $toast.classList.remove("show");
-        }, 4000);
+        $toastIcon.textContent = icon; $toastMsg.textContent = msg;
+        $toast.classList.add("show"); clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { $toast.classList.remove("show"); }, 4000);
       }
 
       /* ==================================================================
-         SETTINGS LOGIC
+         SETTINGS
          ================================================================== */
       function applyInputs() {
         dur.pomodoro = clamp(parseInt($inPomo.value, 10) || 25, LIMITS.pomodoro[0], LIMITS.pomodoro[1]);
         dur.short = clamp(parseInt($inShort.value, 10) || 5, LIMITS.short[0], LIMITS.short[1]);
         dur.long = clamp(parseInt($inLong.value, 10) || 15, LIMITS.long[0], LIMITS.long[1]);
-        $inPomo.value = dur.pomodoro;
-        $inShort.value = dur.short;
-        $inLong.value = dur.long;
+        $inPomo.value = dur.pomodoro; $inShort.value = dur.short; $inLong.value = dur.long;
         saveCfg();
-        if (!running) {
-          totalSec = dur[mode] * 60;
-          remainSec = totalSec;
-          render();
-          renderGoBtn();
-        }
+        if (!running) { totalSec = dur[mode] * 60; remainSec = totalSec; render(); renderGoBtn(); }
       }
 
       /* ==================================================================
          EVENT WIRING
          ================================================================== */
       function wireEvents() {
-        /* Start / Pause toggle */
-        $btnGo.addEventListener("click", function () {
-          running ? stop() : start();
-        });
-
-        /* Reset */
+        $btnGo.addEventListener("click", function () { running ? stop() : start(); });
         $btnReset.addEventListener("click", reset);
+        $tabs.forEach(function (t) { t.addEventListener("click", function () { setMode(t.dataset.mode); }); });
 
-        /* Mode tabs */
-        $tabs.forEach(function (tab) {
-          tab.addEventListener("click", function () {
-            setMode(tab.dataset.mode);
+        /* Theme */
+        $themeBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            applyTheme(btn.dataset.theme);
+            renderAchievement();
+            renderTodayStats();
+            renderLogList();
           });
         });
 
@@ -1186,43 +1300,41 @@
           $cfgToggle.setAttribute("aria-expanded", open);
         });
 
-        /* Stepper buttons */
+        /* Steppers */
         document.querySelectorAll(".stepper-btn").forEach(function (btn) {
           btn.addEventListener("click", function () {
             var input = document.getElementById(btn.dataset.target);
             var dir = parseInt(btn.dataset.dir, 10);
-            var val = (parseInt(input.value, 10) || 0) + dir;
-            input.value = clamp(val, parseInt(input.min, 10), parseInt(input.max, 10));
+            input.value = clamp((parseInt(input.value, 10) || 0) + dir, parseInt(input.min, 10), parseInt(input.max, 10));
             applyInputs();
           });
         });
-
-        /* Manual input */
-        [$inPomo, $inShort, $inLong].forEach(function (el) {
-          el.addEventListener("change", applyInputs);
-        });
+        [$inPomo, $inShort, $inLong].forEach(function (el) { el.addEventListener("change", applyInputs); });
 
         /* Volume */
         $volRange.addEventListener("input", function () {
           volume = parseInt($volRange.value, 10) / 100;
-          $volN.textContent = $volRange.value;
-          saveCfg();
+          $volN.textContent = $volRange.value; saveCfg();
+        });
+        document.getElementById("btnTestAlarm").addEventListener("click", fireAlarm);
+
+        /* 7-day log toggle */
+        $logsToggle.addEventListener("click", function () {
+          var open = $logSection.classList.toggle("open");
+          $logsToggle.textContent = open ? "\u25B2 Gizle" : "\u25BC Ge\u00E7mi\u015F";
         });
 
-        /* Test alarm */
-        document.getElementById("btnTestAlarm").addEventListener("click", fireAlarm);
+        /* Celebration modal */
+        $celebClose.addEventListener("click", hideCelebration);
+        $celebModal.addEventListener("click", function (e) { if (e.target === $celebModal) hideCelebration(); });
 
         /* Keyboard shortcuts */
         document.addEventListener("keydown", function (e) {
+          if (e.code === "Escape" && $celebModal.classList.contains("active")) { hideCelebration(); return; }
           if (e.target.tagName === "INPUT") return;
           switch (e.code) {
-            case "Space":
-              e.preventDefault();
-              running ? stop() : start();
-              break;
-            case "KeyR":
-              if (!e.ctrlKey && !e.metaKey) reset();
-              break;
+            case "Space": e.preventDefault(); running ? stop() : start(); break;
+            case "KeyR": if (!e.ctrlKey && !e.metaKey) reset(); break;
             case "Digit1": setMode("pomodoro"); break;
             case "Digit2": setMode("short"); break;
             case "Digit3": setMode("long"); break;
