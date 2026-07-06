@@ -14,10 +14,12 @@
   <meta name="description" content="pomodorƎ — Air-gapped, privacy-first Pomodoro timer by EO Digital Lab.">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; media-src 'self' data:; img-src 'self' data:; frame-ancestors 'none';">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="Permissions-Policy" content="microphone=(), camera=(), geolocation=()">
   <title>pomodorƎ</title>
   <style>
     /* ==================================================================
-       pomodorƎ  ·  EO Digital Lab  ·  v2.0.0
+       pomodorƎ  ·  EO Digital Lab  ·  v2.3.0
        Design System: Cybersecurity Laboratory Dark Theme
        Themes: Ersin Ö. Modu (Default Dark) · Nisa G. Modu
        Stack: Pure HTML5 + CSS3 + Vanilla JS (Zero Dependencies)
@@ -32,10 +34,10 @@
       --bg-surface: #0f172a;
       --bg-elevated: #1e293b;
       --bg-hover: #263348;
-      --text-ice: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-dim: #475569;
-      --text-ghost: #334155;
+      --text-ice: #ffffff;
+      --text-muted: #e2e8f0;
+      --text-dim: #cbd5e1;
+      --text-ghost: #94a3b8;
       --accent: #ff3131;
       --accent-50: rgba(255, 49, 49, 0.50);
       --accent-20: rgba(255, 49, 49, 0.20);
@@ -65,6 +67,10 @@
       --bg-surface: #1a0f1a;
       --bg-elevated: #2a1528;
       --bg-hover: #3a1d36;
+      --text-ice: #ffffff;
+      --text-muted: #f3d8e8;
+      --text-dim: #d8b4cc;
+      --text-ghost: #a67c9c;
       --accent: #ff6b9d;
       --accent-50: rgba(255, 107, 157, 0.50);
       --accent-20: rgba(255, 107, 157, 0.20);
@@ -75,9 +81,8 @@
       --break-20: rgba(192, 132, 252, 0.20);
       --break-10: rgba(192, 132, 252, 0.10);
       --break-06: rgba(192, 132, 252, 0.06);
-      --text-ghost: #3a1a30;
-      --border: rgba(255, 107, 157, 0.06);
-      --border-lit: rgba(255, 107, 157, 0.12);
+      --border: rgba(255, 107, 157, 0.08);
+      --border-lit: rgba(255, 107, 157, 0.16);
     }
 
     /* — Base — */
@@ -86,6 +91,10 @@
       font-family: var(--font-ui); background: var(--bg-abyss); color: var(--text-ice);
       min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
       transition: background 0.5s var(--ease);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 49, 49, 0.3);
+    }
+    body.theme-nisa {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 107, 157, 0.4);
     }
 
     /* — Ambient Glow — */
@@ -106,10 +115,10 @@
       pointer-events: none; z-index: 0;
     }
 
-    /* — Shell — */
+    /* — Shell & Layout (Extended for Desktop) — */
     .shell {
       position: relative; z-index: 1; display: flex; flex-direction: column;
-      align-items: center; min-height: 100vh; width: 100%; max-width: 540px;
+      align-items: center; min-height: 100vh; width: 100%; max-width: 960px;
       margin: 0 auto; padding: 0 1.25rem;
     }
 
@@ -139,33 +148,48 @@
       transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease);
     }
     .ver {
-      font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-ghost);
-      letter-spacing: 0.05em; padding: 0.2rem 0.45rem; border: 1px solid var(--border);
-      border-radius: var(--radius-xs); user-select: none;
+      font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-ice);
+      letter-spacing: 0.05em; padding: 0.2rem 0.45rem; border: 1px solid var(--border-lit);
+      border-radius: var(--radius-xs); user-select: none; font-weight: 600;
     }
 
     /* ==================================================================
-       MAIN
+       MAIN CONTENT (Responsive Flex)
        ================================================================== */
     .main {
       flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; width: 100%; gap: 1.4rem; padding: 2rem 0;
+      justify-content: flex-start; width: 100%; padding: 2rem 0;
+    }
+    .main-content {
+      display: flex; flex-direction: column; width: 100%; gap: 1.4rem; align-items: center;
+    }
+    .col-left, .col-right {
+      display: flex; flex-direction: column; width: 100%; max-width: 400px; gap: 1.4rem; align-items: center;
+    }
+    
+    @media (min-width: 768px) {
+      .main { padding: 3rem 0; }
+      .main-content {
+        flex-direction: row; align-items: flex-start; justify-content: center; gap: 2rem;
+      }
+      .col-left, .col-right { max-width: 420px; align-items: stretch; }
+      .tabs, .card, .stats-panel, .theme-selector, .cfg-panel { max-width: 100%; }
     }
 
     /* — Mode Tabs — */
     .tabs {
       display: flex; gap: 4px; background: var(--bg-surface); padding: 4px;
       border-radius: var(--radius); border: 1px solid var(--border);
-      width: 100%; max-width: 400px; transition: background 0.4s var(--ease);
+      width: 100%; transition: background 0.4s var(--ease);
     }
     .tab {
       flex: 1; padding: 0.55rem 0.2rem; border: none; border-radius: calc(var(--radius) - 4px);
       background: transparent; color: var(--text-muted); font-family: var(--font-ui);
-      font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all var(--speed) var(--ease);
-      white-space: nowrap; letter-spacing: 0.01em;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all var(--speed) var(--ease);
+      white-space: nowrap; letter-spacing: 0.01em; text-shadow: inherit;
     }
     .tab:hover { color: var(--text-ice); background: rgba(255,255,255,0.03); }
-    .tab.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 600; }
+    .tab.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 700; }
     .tab.active[data-mode="pomodoro"] { box-shadow: 0 0 14px var(--accent-10), inset 0 1px 0 rgba(255,255,255,0.04); }
     .tab.active[data-mode="short"],
     .tab.active[data-mode="long"] { box-shadow: 0 0 14px var(--break-10), inset 0 1px 0 rgba(255,255,255,0.04); }
@@ -174,7 +198,7 @@
        TIMER CARD
        ================================================================== */
     .card {
-      width: 100%; max-width: 400px; background: var(--bg-surface);
+      width: 100%; background: var(--bg-surface);
       border: 1px solid var(--border); border-radius: var(--radius);
       padding: 2.5rem 2rem 1.75rem; display: flex; flex-direction: column;
       align-items: center; gap: 1.75rem; box-shadow: var(--shadow);
@@ -187,7 +211,12 @@
     }
     .card.is-break::before { background: linear-gradient(90deg, transparent, var(--break-20), transparent); }
 
-    /* — Nisa G. Modu: Decorative SVGs (Hidden by Default) — */
+    /* — Ersin Ö. Modu: Security Shield (Hidden in Nisa Modu) — */
+    .ersin-deco { display: block; position: absolute; pointer-events: none; z-index: 2; }
+    body.theme-nisa .ersin-deco { display: none; }
+    .ersin-shield { top: 14px; left: 16px; width: 34px; height: 34px; opacity: 0.8; }
+
+    /* — Nisa G. Modu: Decorative SVGs (Hidden in Default Modu) — */
     .nisa-deco { display: none; position: absolute; pointer-events: none; z-index: 2; }
     body.theme-nisa .nisa-deco { display: block; }
     .nisa-kitty { top: 10px; left: 12px; width: 42px; height: 42px; opacity: 0.85; }
@@ -225,17 +254,22 @@
       transition: color 0.4s var(--ease), text-shadow 0.4s var(--ease); user-select: none;
     }
     .clock.break-glow { color: var(--break); text-shadow: 0 0 28px var(--break-20), 0 0 56px var(--break-10); }
-    .clock-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500; }
+    .clock-label { font-size: 0.68rem; color: var(--text-ice); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 600; text-shadow: inherit; }
 
     /* — Motivational Quote — */
     .motivational-quote {
-      display: none; width: 100%; text-align: center; font-size: 0.72rem;
-      color: var(--text-ice); font-style: italic; line-height: 1.5;
-      padding: 0 1rem; opacity: 0; transition: opacity 0.5s var(--ease);
-      text-shadow: 0 0 8px var(--accent-20); margin-top: -0.5rem;
+      width: 100%; text-align: center; line-height: 1.5; padding: 0 1rem;
+      opacity: 0; transition: opacity 0.5s var(--ease); margin-top: -0.5rem;
+      /* Default Ersin Modu (Terminal Style) */
+      font-family: var(--font-mono); font-size: 0.65rem; color: #39ff14;
+      text-shadow: 0 0 6px rgba(57,255,20,0.5); font-style: normal;
     }
     .motivational-quote.visible { opacity: 1; }
-    body.theme-nisa .motivational-quote { display: block; }
+    body.theme-nisa .motivational-quote {
+      /* Nisa Modu */
+      font-family: var(--font-ui); font-size: 0.72rem; color: var(--text-ice);
+      text-shadow: 0 0 8px var(--accent-20); font-style: italic;
+    }
 
     /* — Progress Bar — */
     .progress-track { width: 100%; height: 3px; background: var(--bg-elevated); border-radius: 2px; overflow: hidden; }
@@ -252,12 +286,12 @@
       padding: 0.65rem 1.5rem; border: 1px solid var(--border-lit); border-radius: var(--radius-sm);
       font-family: var(--font-ui); font-size: 0.83rem; font-weight: 600; cursor: pointer;
       transition: all var(--speed) var(--ease); user-select: none;
-      display: inline-flex; align-items: center; gap: 0.4rem; letter-spacing: 0.02em;
+      display: inline-flex; align-items: center; gap: 0.4rem; letter-spacing: 0.02em; text-shadow: inherit;
     }
     .ctl-icon { font-size: 0.92rem; line-height: 1; }
     .ctl--go {
       background: var(--accent); color: #fff; border-color: var(--accent);
-      box-shadow: 0 2px 14px var(--accent-20), inset 0 1px 0 rgba(255,255,255,0.10);
+      box-shadow: 0 2px 14px var(--accent-20), inset 0 1px 0 rgba(255,255,255,0.10); text-shadow: none;
     }
     .ctl--go:hover { filter: brightness(0.9); transform: translateY(-1px); box-shadow: 0 4px 22px var(--accent-20); }
     .ctl--go:active { transform: translateY(0); }
@@ -274,13 +308,13 @@
       border: 1.5px solid var(--text-ghost); transition: all var(--speed) var(--ease);
     }
     .pip.lit { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-20); }
-    .session-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ghost); margin-left: 0.35rem; }
+    .session-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ice); font-weight: 600; margin-left: 0.35rem; }
 
     /* ==================================================================
        STATS & ACHIEVEMENT PANEL
        ================================================================== */
     .stats-panel {
-      width: 100%; max-width: 400px; background: var(--bg-surface);
+      width: 100%; background: var(--bg-surface);
       border: 1px solid var(--border); border-radius: var(--radius);
       padding: 1rem 1.2rem; box-shadow: var(--shadow);
       transition: background 0.4s var(--ease), border-color 0.4s var(--ease);
@@ -289,25 +323,25 @@
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 0.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
     }
-    .stats-title { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
+    .stats-title { font-size: 0.68rem; font-weight: 600; color: var(--text-ice); letter-spacing: 0.02em; }
     .stats-toggle-btn {
-      background: none; border: none; color: var(--text-ghost); font-size: 0.62rem;
+      background: none; border: none; color: var(--text-ice); font-size: 0.62rem; font-weight: 600;
       cursor: pointer; font-family: var(--font-ui); transition: color var(--speed) var(--ease);
-      padding: 0.15rem 0.3rem;
+      padding: 0.15rem 0.3rem; text-shadow: inherit;
     }
-    .stats-toggle-btn:hover { color: var(--text-muted); }
+    .stats-toggle-btn:hover { color: var(--accent); }
 
     /* Achievement row */
     .achieve-row { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.7rem; }
-    .achieve-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; transition: transform 0.4s var(--ease); }
+    .achieve-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; transition: transform 0.4s var(--ease); text-shadow: none; }
     .achieve-icon.glow { animation: achieveGlow 2s ease-in-out infinite alternate; }
     @keyframes achieveGlow {
       0% { transform: scale(1); filter: drop-shadow(0 0 4px var(--accent-20)); }
       100% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-50)); }
     }
     .achieve-body { flex: 1; min-width: 0; }
-    .achieve-title { font-size: 0.72rem; font-weight: 600; color: var(--text-ice); margin-bottom: 0.1rem; }
-    .achieve-sub { font-size: 0.6rem; color: var(--text-muted); }
+    .achieve-title { font-size: 0.72rem; font-weight: 700; color: var(--text-ice); margin-bottom: 0.1rem; }
+    .achieve-sub { font-size: 0.6rem; color: var(--text-muted); font-weight: 600; }
     .achieve-bar-track { width: 100%; height: 3px; background: var(--bg-elevated); border-radius: 2px; overflow: hidden; margin-top: 0.35rem; }
     .achieve-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.6s var(--ease); box-shadow: 0 0 6px var(--accent-20); }
 
@@ -318,91 +352,86 @@
     }
     .today-stat { flex: 1; text-align: center; }
     .today-val { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--accent); line-height: 1.3; }
-    .today-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .today-label { font-size: 0.55rem; color: var(--text-ice); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 
     /* 7-Day Log (collapsible) */
     .log-section { display: none; }
     .log-section.open { display: block; animation: cfgReveal 0.3s var(--ease); }
-    .log-title { font-size: 0.6rem; font-weight: 600; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+    .log-title { font-size: 0.6rem; font-weight: 600; color: var(--text-ice); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
     .log-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
     .log-item {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.62rem; color: var(--text-muted); padding: 0.3rem 0.4rem;
+      font-size: 0.65rem; color: var(--text-ice); padding: 0.35rem 0.5rem;
       border-radius: var(--radius-xs); transition: background var(--speed) var(--ease);
     }
     .log-item:hover { background: var(--bg-elevated); }
-    .log-date { font-weight: 500; }
-    .log-val { font-family: var(--font-mono); color: var(--text-ghost); font-size: 0.6rem; }
-
-    /* Lifetime Signature Not Modülü */
-    .pro-note {
-      font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-ghost);
-      line-height: 1.5; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border);
-      text-align: left; opacity: 0.8;
-    }
+    .log-date { font-weight: 600; color: #ffffff; }
+    .log-val { font-family: var(--font-mono); color: var(--text-ice); font-weight: 500; font-size: 0.62rem; }
 
     /* ==================================================================
        THEME SELECTOR
        ================================================================== */
     .theme-selector {
-      width: 100%; max-width: 400px; display: flex; gap: 4px;
+      width: 100%; display: flex; gap: 4px;
       background: var(--bg-surface); padding: 4px; border-radius: var(--radius);
       border: 1px solid var(--border); transition: background 0.4s var(--ease);
     }
     .theme-btn {
       flex: 1; padding: 0.48rem 0.3rem; border: none; border-radius: calc(var(--radius) - 4px);
       background: transparent; color: var(--text-muted); font-family: var(--font-ui);
-      font-size: 0.72rem; font-weight: 500; cursor: pointer; transition: all var(--speed) var(--ease);
+      font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all var(--speed) var(--ease);
       white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 0.3rem;
+      text-shadow: inherit;
     }
     .theme-btn:hover { color: var(--text-ice); background: rgba(255,255,255,0.03); }
-    .theme-btn.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 600; box-shadow: 0 0 12px var(--accent-10); }
-    .theme-btn-emoji { font-size: 0.85rem; }
+    .theme-btn.active { color: var(--text-ice); background: var(--bg-elevated); font-weight: 700; box-shadow: 0 0 12px var(--accent-10); }
+    .theme-btn-emoji { font-size: 0.85rem; text-shadow: none; }
 
     /* ==================================================================
        SETTINGS PANEL
        ================================================================== */
     .cfg-toggle {
-      background: none; border: 1px solid var(--border); border-radius: var(--radius-xs);
-      color: var(--text-ghost); font-family: var(--font-ui); font-size: 0.7rem;
-      padding: 0.35rem 0.65rem; cursor: pointer; transition: all var(--speed) var(--ease);
+      background: none; border: 1px solid var(--border-lit); border-radius: var(--radius-xs);
+      color: var(--text-ice); font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600;
+      padding: 0.4rem 0.8rem; cursor: pointer; transition: all var(--speed) var(--ease);
       display: inline-flex; align-items: center; gap: 0.3rem; letter-spacing: 0.03em;
+      align-self: flex-start; text-shadow: inherit;
     }
-    .cfg-toggle:hover { color: var(--text-muted); border-color: var(--border-lit); background: var(--bg-surface); }
+    .cfg-toggle:hover { color: var(--accent); border-color: var(--accent-50); background: var(--bg-surface); }
     .cfg-panel {
-      width: 100%; max-width: 400px; background: var(--bg-surface);
+      width: 100%; background: var(--bg-surface);
       border: 1px solid var(--border); border-radius: var(--radius);
       padding: 1.4rem; box-shadow: var(--shadow); display: none;
       transition: background 0.4s var(--ease);
     }
     .cfg-panel.open { display: block; animation: cfgReveal 0.3s var(--ease); }
     @keyframes cfgReveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    .cfg-title { font-size: 0.68rem; font-weight: 600; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.9rem; }
+    .cfg-title { font-size: 0.68rem; font-weight: 700; color: var(--text-ice); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.9rem; }
     .cfg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
     .cfg-group { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-    .cfg-group label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; text-align: center; }
+    .cfg-group label { font-size: 0.62rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; }
     .stepper { display: flex; align-items: center; background: var(--bg-abyss); border: 1px solid var(--border); border-radius: var(--radius-xs); overflow: hidden; }
     .stepper-btn {
-      width: 30px; height: 34px; background: transparent; border: none; color: var(--text-muted);
+      width: 30px; height: 34px; background: transparent; border: none; color: var(--text-ice);
       font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all var(--speed) var(--ease); font-family: var(--font-mono);
+      transition: all var(--speed) var(--ease); font-family: var(--font-mono); text-shadow: inherit;
     }
-    .stepper-btn:hover { background: var(--bg-elevated); color: var(--text-ice); }
+    .stepper-btn:hover { background: var(--bg-elevated); color: var(--accent); }
     .stepper-input {
       width: 40px; height: 34px; background: transparent; border: none;
       border-left: 1px solid var(--border); border-right: 1px solid var(--border);
       color: var(--text-ice); font-family: var(--font-mono); font-size: 0.88rem;
-      text-align: center; outline: none; appearance: textfield;
+      text-align: center; outline: none; appearance: textfield; font-weight: 700; text-shadow: inherit;
     }
     .stepper-input::-webkit-inner-spin-button,
     .stepper-input::-webkit-outer-spin-button { appearance: none; margin: 0; }
     .stepper-input:focus { background: var(--accent-06); }
     .vol-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
-    .vol-label { font-size: 0.62rem; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .vol-label { font-size: 0.62rem; color: var(--text-ice); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
     .vol-range { appearance: none; flex: 1; height: 3px; background: var(--bg-elevated); border-radius: 2px; outline: none; cursor: pointer; }
     .vol-range::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-surface); cursor: pointer; box-shadow: 0 0 6px var(--accent-20); }
     .vol-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-surface); cursor: pointer; box-shadow: 0 0 6px var(--accent-20); }
-    .vol-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ghost); min-width: 2.2ch; text-align: right; }
+    .vol-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-ice); font-weight: 600; min-width: 2.2ch; text-align: right; }
     .cfg-foot { display: flex; justify-content: flex-end; gap: 0.4rem; margin-top: 0.9rem; }
     .ctl-xs { padding: 0.3rem 0.7rem; font-size: 0.7rem; border-radius: var(--radius-xs); }
 
@@ -418,7 +447,7 @@
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s var(--ease);
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast-icon { font-size: 1rem; }
+    .toast-icon { font-size: 1rem; text-shadow: none; }
 
     /* ==================================================================
        CELEBRATION MODAL
@@ -449,13 +478,13 @@
     }
     @keyframes modalStripe { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
 
-    .modal-emoji { font-size: 4rem; line-height: 1; margin-bottom: 1rem; animation: emojiPulse 1.5s ease-in-out infinite alternate; display: inline-block; }
+    .modal-emoji { font-size: 4rem; line-height: 1; margin-bottom: 1rem; animation: emojiPulse 1.5s ease-in-out infinite alternate; display: inline-block; text-shadow: none; }
     @keyframes emojiPulse { 0% { transform: scale(1) rotate(-3deg); } 100% { transform: scale(1.15) rotate(3deg); } }
 
     /* Floating hearts (Nisa modal only) */
     .modal-hearts { display: none; position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
     body.theme-nisa .modal-hearts { display: block; }
-    .m-heart { position: absolute; font-size: 1.2rem; opacity: 0; animation: heartRise 3s ease-in infinite; }
+    .m-heart { position: absolute; font-size: 1.2rem; opacity: 0; animation: heartRise 3s ease-in infinite; text-shadow: none; }
     .m-heart:nth-child(1) { left: 10%; animation-delay: 0s; }
     .m-heart:nth-child(2) { left: 25%; animation-delay: 0.6s; font-size: 0.9rem; }
     .m-heart:nth-child(3) { left: 45%; animation-delay: 1.2s; }
@@ -475,12 +504,12 @@
       font-size: 0.78rem; font-weight: 700; color: var(--accent);
       letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-20); margin-bottom: 1.2rem;
     }
-    .modal-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .modal-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; font-weight: 500; white-space: pre-line; }
     .modal-close-btn {
       padding: 0.65rem 1.8rem; background: var(--accent); color: #fff; border: none;
       border-radius: var(--radius-sm); font-family: var(--font-ui); font-size: 0.82rem;
       font-weight: 600; cursor: pointer; transition: all var(--speed) var(--ease);
-      box-shadow: 0 2px 14px var(--accent-20);
+      box-shadow: 0 2px 14px var(--accent-20); text-shadow: none;
     }
     .modal-close-btn:hover { filter: brightness(0.9); transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-20); }
     .modal-close-btn:active { transform: translateY(0); }
@@ -509,12 +538,12 @@
       border-top: 1px solid var(--border); display: flex;
       flex-direction: column; align-items: center; gap: 0.9rem;
     }
-    .footer-privacy { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.02em; line-height: 1.7; }
+    .footer-privacy { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.02em; line-height: 1.7; font-weight: 500; }
     .footer-brand { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
     .footer-brand-name { font-size: 1.05rem; font-weight: 700; color: var(--text-ice); letter-spacing: 0.04em; text-shadow: 0 0 18px rgba(255,255,255,0.06); }
     .footer-brand-name .footer-accent { color: var(--accent); text-shadow: 0 0 16px var(--accent-20), 0 0 32px var(--accent-10); transition: color 0.4s var(--ease); }
-    .footer-tagline { font-size: 0.58rem; color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 500; }
-    .footer-legal { font-size: 0.56rem; color: var(--text-ghost); letter-spacing: 0.02em; line-height: 1.7; margin-top: 0.1rem; }
+    .footer-tagline { font-size: 0.58rem; color: var(--text-ice); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; text-shadow: inherit; }
+    .footer-legal { font-size: 0.56rem; color: var(--text-ghost); letter-spacing: 0.02em; line-height: 1.7; margin-top: 0.1rem; font-weight: 500; }
 
     /* ==================================================================
        RESPONSIVE
@@ -522,7 +551,7 @@
     @media (max-width: 480px) {
       .header { padding: 1.2rem 0 0.75rem; }
       .brand-name { font-size: 1.1rem; }
-      .main { gap: 1rem; padding: 1.5rem 0; }
+      .main { padding: 1.5rem 0; }
       .clock { font-size: 4rem; }
       .card { padding: 2rem 1.2rem 1.5rem; }
       .tab, .theme-btn { font-size: 0.68rem; padding: 0.45rem 0.1rem; }
@@ -532,6 +561,7 @@
       .modal-emoji { font-size: 3rem; }
       .nisa-kitty { width: 32px; height: 32px; }
       .nisa-unicorn { width: 34px; height: 34px; }
+      .ersin-shield { width: 28px; height: 28px; }
     }
     @media (max-width: 340px) { .clock { font-size: 3.2rem; } .cfg-grid { grid-template-columns: 1fr; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
@@ -573,209 +603,220 @@
         <div class="logo-mark" aria-hidden="true"></div>
         <h1 class="brand-name">pomodor<span class="accent">Ǝ</span></h1>
       </div>
-      <span class="ver">v2.0.0</span>
+      <span class="ver">v2.3.0</span>
     </header>
 
     <!-- ======== MAIN ======== -->
     <main class="main">
+      <div class="main-content">
+        
+        <!-- Left Column: Timer & Controls -->
+        <div class="col-left">
+          
+          <!-- Mode Tabs -->
+          <nav class="tabs" id="tabs" role="tablist" aria-label="Zamanlayıcı modları">
+            <button class="tab active" data-mode="pomodoro" role="tab" aria-selected="true" id="tabPomo">Pomodoro</button>
+            <button class="tab" data-mode="short" role="tab" aria-selected="false" id="tabShort">Kısa Mola</button>
+            <button class="tab" data-mode="long" role="tab" aria-selected="false" id="tabLong">Uzun Mola</button>
+          </nav>
 
-      <!-- Mode Tabs -->
-      <nav class="tabs" id="tabs" role="tablist" aria-label="Zamanlayıcı modları">
-        <button class="tab active" data-mode="pomodoro" role="tab" aria-selected="true" id="tabPomo">Pomodoro</button>
-        <button class="tab" data-mode="short" role="tab" aria-selected="false" id="tabShort">Kısa Mola</button>
-        <button class="tab" data-mode="long" role="tab" aria-selected="false" id="tabLong">Uzun Mola</button>
-      </nav>
+          <!-- Timer Card -->
+          <section class="card" id="card" aria-label="Zamanlayıcı">
 
-      <!-- Timer Card -->
-      <section class="card" id="card" aria-label="Zamanlayıcı">
+            <!-- Ersin Ö. Modu: Security Shield (inline SVG) -->
+            <svg class="ersin-deco ersin-shield" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 8 L16 22 L16 48 C16 72 30 88 50 94 C70 88 84 72 84 48 L84 22 Z" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" opacity="0.4"/>
+              <path d="M50 16 L24 27 L24 48 C24 65 35 78 50 83 C65 78 76 65 76 48 L76 27 Z" fill="var(--accent)" opacity="0.15"/>
+              <polyline points="40,50 48,58 64,40" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+            </svg>
 
-        <!-- Nisa G. Modu: Hello Kitty (inline SVG — zero outbound) -->
-        <svg class="nisa-deco nisa-kitty" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="22,32 18,8 38,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
-          <polygon points="24,28 22,14 34,25" fill="var(--accent)" opacity="0.55"/>
-          <polygon points="78,32 82,8 62,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
-          <polygon points="76,28 78,14 66,25" fill="var(--accent)" opacity="0.55"/>
-          <ellipse cx="50" cy="55" rx="32" ry="28" fill="#fff" stroke="#555" stroke-width="1.2"/>
-          <ellipse cx="38" cy="52" rx="3.2" ry="3.8" fill="#333"/>
-          <ellipse cx="62" cy="52" rx="3.2" ry="3.8" fill="#333"/>
-          <ellipse cx="50" cy="58" rx="2.2" ry="1.8" fill="#f5a623"/>
-          <line x1="12" y1="50" x2="33" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <line x1="12" y1="57" x2="33" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <line x1="14" y1="64" x2="33" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <line x1="88" y1="50" x2="67" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <line x1="88" y1="57" x2="67" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <line x1="86" y1="64" x2="67" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
-          <ellipse cx="25" cy="22" rx="6.5" ry="4.5" fill="var(--accent)" transform="rotate(-20 25 22)"/>
-          <ellipse cx="17" cy="18" rx="5" ry="3.5" fill="var(--accent)" transform="rotate(10 17 18)"/>
-          <circle cx="21" cy="20" r="2" fill="#fff" opacity="0.6"/>
-        </svg>
+            <!-- Nisa G. Modu: Hello Kitty (inline SVG — zero outbound) -->
+            <svg class="nisa-deco nisa-kitty" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="22,32 18,8 38,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
+              <polygon points="24,28 22,14 34,25" fill="var(--accent)" opacity="0.55"/>
+              <polygon points="78,32 82,8 62,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/>
+              <polygon points="76,28 78,14 66,25" fill="var(--accent)" opacity="0.55"/>
+              <ellipse cx="50" cy="55" rx="32" ry="28" fill="#fff" stroke="#555" stroke-width="1.2"/>
+              <ellipse cx="38" cy="52" rx="3.2" ry="3.8" fill="#333"/>
+              <ellipse cx="62" cy="52" rx="3.2" ry="3.8" fill="#333"/>
+              <ellipse cx="50" cy="58" rx="2.2" ry="1.8" fill="#f5a623"/>
+              <line x1="12" y1="50" x2="33" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <line x1="12" y1="57" x2="33" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="64" x2="33" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <line x1="88" y1="50" x2="67" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <line x1="88" y1="57" x2="67" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <line x1="86" y1="64" x2="67" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5"/>
+              <ellipse cx="25" cy="22" rx="6.5" ry="4.5" fill="var(--accent)" transform="rotate(-20 25 22)"/>
+              <ellipse cx="17" cy="18" rx="5" ry="3.5" fill="var(--accent)" transform="rotate(10 17 18)"/>
+              <circle cx="21" cy="20" r="2" fill="#fff" opacity="0.6"/>
+            </svg>
 
-        <!-- Nisa G. Modu: Unicorn (inline SVG — zero outbound) -->
-        <svg class="nisa-deco nisa-unicorn" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <!-- Horn -->
-          <polygon points="50,4 44,30 56,30" fill="#ffd700" stroke="#e6c200" stroke-width="0.8"/>
-          <line x1="47" y1="14" x2="53" y2="14" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
-          <line x1="46" y1="20" x2="54" y2="20" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
-          <line x1="45.5" y1="26" x2="54.5" y2="26" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
-          <!-- Head -->
-          <ellipse cx="50" cy="55" rx="26" ry="30" fill="#fff" stroke="#ddd" stroke-width="1"/>
-          <!-- Ear -->
-          <polygon points="30,28 24,12 38,25" fill="#fff" stroke="#ddd" stroke-width="0.8"/>
-          <polygon points="32,26 28,16 36,24" fill="var(--accent)" opacity="0.3"/>
-          <!-- Eye -->
-          <ellipse cx="56" cy="48" rx="4" ry="4.5" fill="#333"/>
-          <circle cx="57.5" cy="46.5" r="1.2" fill="#fff"/>
-          <!-- Nostril -->
-          <circle cx="62" cy="62" r="1.2" fill="#ddd"/>
-          <!-- Mane -->
-          <path d="M28,32 Q18,42 22,56 Q14,50 18,38 Q10,48 14,34" fill="var(--accent)" opacity="0.5" stroke="none"/>
-          <path d="M24,38 Q16,48 20,60" fill="none" stroke="var(--break)" stroke-width="1.5" opacity="0.4"/>
-          <!-- Sparkle star -->
-          <polygon points="82,18 84,24 90,24 85,28 87,34 82,30 77,34 79,28 74,24 80,24" fill="#ffd700" opacity="0.7">
-            <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
-          </polygon>
-          <polygon points="18,72 19.5,76 24,76 20.5,78.5 22,83 18,80 14,83 15.5,78.5 12,76 16.5,76" fill="var(--accent)" opacity="0.5">
-            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/>
-          </polygon>
-        </svg>
+            <!-- Nisa G. Modu: Unicorn (inline SVG — zero outbound) -->
+            <svg class="nisa-deco nisa-unicorn" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Horn -->
+              <polygon points="50,4 44,30 56,30" fill="#ffd700" stroke="#e6c200" stroke-width="0.8"/>
+              <line x1="47" y1="14" x2="53" y2="14" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+              <line x1="46" y1="20" x2="54" y2="20" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+              <line x1="45.5" y1="26" x2="54.5" y2="26" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
+              <!-- Head -->
+              <ellipse cx="50" cy="55" rx="26" ry="30" fill="#fff" stroke="#ddd" stroke-width="1"/>
+              <!-- Ear -->
+              <polygon points="30,28 24,12 38,25" fill="#fff" stroke="#ddd" stroke-width="0.8"/>
+              <polygon points="32,26 28,16 36,24" fill="var(--accent)" opacity="0.3"/>
+              <!-- Eye -->
+              <ellipse cx="56" cy="48" rx="4" ry="4.5" fill="#333"/>
+              <circle cx="57.5" cy="46.5" r="1.2" fill="#fff"/>
+              <!-- Nostril -->
+              <circle cx="62" cy="62" r="1.2" fill="#ddd"/>
+              <!-- Mane -->
+              <path d="M28,32 Q18,42 22,56 Q14,50 18,38 Q10,48 14,34" fill="var(--accent)" opacity="0.5" stroke="none"/>
+              <path d="M24,38 Q16,48 20,60" fill="none" stroke="var(--break)" stroke-width="1.5" opacity="0.4"/>
+              <!-- Sparkle star -->
+              <polygon points="82,18 84,24 90,24 85,28 87,34 82,30 77,34 79,28 74,24 80,24" fill="#ffd700" opacity="0.7">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+              </polygon>
+              <polygon points="18,72 19.5,76 24,76 20.5,78.5 22,83 18,80 14,83 15.5,78.5 12,76 16.5,76" fill="var(--accent)" opacity="0.5">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/>
+              </polygon>
+            </svg>
 
-        <!-- Nisa G. Modu: Ribbon Bow (inline SVG — center top) -->
-        <svg class="nisa-deco nisa-bow-center" viewBox="0 0 60 28" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="20" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(-8 20 12)"/>
-          <ellipse cx="40" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(8 40 12)"/>
-          <circle cx="30" cy="13" r="4" fill="var(--accent)"/>
-          <circle cx="30" cy="13" r="2" fill="#fff" opacity="0.3"/>
-          <path d="M26,17 Q28,26 30,28 Q32,26 34,17" fill="var(--accent)" opacity="0.5"/>
-        </svg>
+            <!-- Nisa G. Modu: Ribbon Bow (inline SVG — center top) -->
+            <svg class="nisa-deco nisa-bow-center" viewBox="0 0 60 28" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="20" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(-8 20 12)"/>
+              <ellipse cx="40" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(8 40 12)"/>
+              <circle cx="30" cy="13" r="4" fill="var(--accent)"/>
+              <circle cx="30" cy="13" r="2" fill="#fff" opacity="0.3"/>
+              <path d="M26,17 Q28,26 30,28 Q32,26 34,17" fill="var(--accent)" opacity="0.5"/>
+            </svg>
 
-        <!-- Sparkle particles (Nisa only) -->
-        <div class="nisa-sparkles">
-          <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
-          <div class="sparkle"></div><div class="sparkle"></div>
-        </div>
+            <!-- Sparkle particles (Nisa only) -->
+            <div class="nisa-sparkles">
+              <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+              <div class="sparkle"></div><div class="sparkle"></div>
+            </div>
 
-        <div class="clock-zone">
-          <div class="clock" id="clock" aria-live="polite">25:00</div>
-          <span class="clock-label" id="clockLabel">pomodoro</span>
-        </div>
+            <div class="clock-zone">
+              <div class="clock" id="clock" aria-live="polite">25:00</div>
+              <span class="clock-label" id="clockLabel">pomodoro</span>
+            </div>
 
-        <!-- Motivational Quote (Nisa Only) -->
-        <div class="motivational-quote" id="motivationalQuote"></div>
+            <!-- Motivational Quote (Dinamik Terminal Log & Nisa Sözleri) -->
+            <div class="motivational-quote" id="motivationalQuote"></div>
 
-        <div class="progress-track">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
+            <div class="progress-track">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
 
-        <div class="controls">
-          <button class="ctl ctl--go" id="btnGo" aria-label="Başlat veya Durdur">
-            <span class="ctl-icon">▶</span> Başlat
-          </button>
-          <button class="ctl ctl--ghost" id="btnReset" aria-label="Sıfırla">
-            <span class="ctl-icon">↺</span> Sıfırla
-          </button>
-        </div>
+            <div class="controls">
+              <button class="ctl ctl--go" id="btnGo" aria-label="Başlat veya Durdur">
+                <span class="ctl-icon" id="btnGoIcon">▶</span> <span id="btnGoText">Başlat</span>
+              </button>
+              <button class="ctl ctl--ghost" id="btnReset" aria-label="Sıfırla">
+                <span class="ctl-icon">↺</span> Sıfırla
+              </button>
+            </div>
 
-        <div class="sessions" id="sessions" aria-label="Oturum sayacı">
-          <div class="pip" data-i="0"></div>
-          <div class="pip" data-i="1"></div>
-          <div class="pip" data-i="2"></div>
-          <div class="pip" data-i="3"></div>
-          <span class="session-n" id="sessionN">0 / 4</span>
-        </div>
-      </section>
+            <div class="sessions" id="sessions" aria-label="Oturum sayacı">
+              <div class="pip" data-i="0"></div>
+              <div class="pip" data-i="1"></div>
+              <div class="pip" data-i="2"></div>
+              <div class="pip" data-i="3"></div>
+              <span class="session-n" id="sessionN">0 / 4</span>
+            </div>
+          </section>
 
-      <!-- Stats & Achievement Panel -->
-      <div class="stats-panel" id="statsPanel">
-        <div class="stats-header">
-          <span class="stats-title" id="statsPanelTitle">📊 Çalışma Logları ve Başarı Durumu</span>
-          <button class="stats-toggle-btn" id="logsToggle" aria-label="Geçmişi göster/gizle">▼ Geçmiş</button>
-        </div>
+          <!-- Theme Selector -->
+          <nav class="theme-selector" id="themeSelector" aria-label="Arayüz teması">
+            <button class="theme-btn active" data-theme="default"><span class="theme-btn-emoji">🔴</span> Ersin Ö. Modu (Default)</button>
+            <button class="theme-btn" data-theme="nisa"><span class="theme-btn-emoji">🎀</span> Nisa G. Modu</button>
+          </nav>
 
-        <!-- Achievement Row -->
-        <div class="achieve-row">
-          <span class="achieve-icon" id="achieveIcon">🌱</span>
-          <div class="achieve-body">
-            <div class="achieve-title" id="achieveTitle">Gelişiyor</div>
-            <div class="achieve-sub" id="achieveSub">0 / 4 Pomodoro tamamlandı</div>
-            <div class="achieve-bar-track"><div class="achieve-bar-fill" id="achieveBar" style="width:0%"></div></div>
+          <!-- Settings Toggle -->
+          <button class="cfg-toggle" id="cfgToggle" aria-expanded="false" aria-controls="cfgPanel">⚙ Ayarlar</button>
+
+          <!-- Settings Panel -->
+          <div class="cfg-panel" id="cfgPanel" role="region" aria-label="Süre ayarları">
+            <div class="cfg-title">Süre Ayarları (dk)</div>
+            <div class="cfg-grid">
+              <div class="cfg-group">
+                <label for="inPomo">Pomodoro</label>
+                <div class="stepper">
+                  <button class="stepper-btn" data-target="inPomo" data-dir="-1" aria-label="Azalt">−</button>
+                  <input type="number" class="stepper-input" id="inPomo" min="1" max="120" value="25">
+                  <button class="stepper-btn" data-target="inPomo" data-dir="1" aria-label="Artır">+</button>
+                </div>
+              </div>
+              <div class="cfg-group">
+                <label for="inShort">Kısa Mola</label>
+                <div class="stepper">
+                  <button class="stepper-btn" data-target="inShort" data-dir="-1" aria-label="Azalt">−</button>
+                  <input type="number" class="stepper-input" id="inShort" min="1" max="60" value="5">
+                  <button class="stepper-btn" data-target="inShort" data-dir="1" aria-label="Artır">+</button>
+                </div>
+              </div>
+              <div class="cfg-group">
+                <label for="inLong">Uzun Mola</label>
+                <div class="stepper">
+                  <button class="stepper-btn" data-target="inLong" data-dir="-1" aria-label="Azalt">−</button>
+                  <input type="number" class="stepper-input" id="inLong" min="1" max="60" value="15">
+                  <button class="stepper-btn" data-target="inLong" data-dir="1" aria-label="Artır">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="vol-row">
+              <span class="vol-label">🔊 Ses</span>
+              <input type="range" class="vol-range" id="volRange" min="0" max="100" value="65">
+              <span class="vol-n" id="volN">65</span>
+            </div>
+            <div class="cfg-foot">
+              <button class="ctl ctl--ghost ctl-xs" id="btnTestAlarm">🔔 Test</button>
+            </div>
           </div>
+          
         </div>
 
-        <!-- Today Stats -->
-        <div class="today-row">
-          <div class="today-stat">
-            <div class="today-val" id="todaySessions">0</div>
-            <div class="today-label" id="todaySessionsLabel">Bugün Seans</div>
+        <!-- Right Column: Stats & Logs -->
+        <div class="col-right">
+          
+          <!-- Stats & Achievement Panel -->
+          <div class="stats-panel" id="statsPanel">
+            <div class="stats-header">
+              <span class="stats-title" id="statsPanelTitle">📊 Çalışma Logları ve Başarı Durumu</span>
+              <button class="stats-toggle-btn" id="logsToggle" aria-label="Geçmişi göster/gizle">▼ Geçmiş</button>
+            </div>
+
+            <!-- Achievement Row -->
+            <div class="achieve-row">
+              <span class="achieve-icon" id="achieveIcon">🌱</span>
+              <div class="achieve-body">
+                <div class="achieve-title" id="achieveTitle">Gelişiyor</div>
+                <div class="achieve-sub" id="achieveSub">0 / 4 Pomodoro tamamlandı</div>
+                <div class="achieve-bar-track"><div class="achieve-bar-fill" id="achieveBar" style="width:0%"></div></div>
+              </div>
+            </div>
+
+            <!-- Today Stats -->
+            <div class="today-row">
+              <div class="today-stat">
+                <div class="today-val" id="todaySessions">0</div>
+                <div class="today-label" id="todaySessionsLabel">Bugün Seans</div>
+              </div>
+              <div class="today-stat">
+                <div class="today-val" id="todayHours">0s 0dk</div>
+                <div class="today-label" id="todayHoursLabel">Odaklanma Süresi</div>
+              </div>
+            </div>
+
+            <!-- 7-Day Log (collapsible) -->
+            <div class="log-section" id="logSection">
+              <div class="log-title" id="logSectionTitle">Son 7 Gün</div>
+              <ul class="log-list" id="logList"></ul>
+            </div>
           </div>
-          <div class="today-stat">
-            <div class="today-val" id="todayHours">0s 0dk</div>
-            <div class="today-label" id="todayHoursLabel">Odaklanma Süresi</div>
-          </div>
+
         </div>
 
-        <!-- 7-Day Log (collapsible) -->
-        <div class="log-section" id="logSection">
-          <div class="log-title" id="logSectionTitle">Son 7 Gün</div>
-          <ul class="log-list" id="logList"></ul>
-        </div>
-
-        <!-- Lifetime Signature Note -->
-        <div class="pro-note">
-          // System Status: SECURE<br>
-          // Auth: EO Digital Lab (Ersin)<br>
-          // [PRO_NOTE]: Bu siber krallıkta Nisa'nın harcadığı her emek,<br>
-          // gösterdiği her disiplin geleceğe bırakılmış en güzel log kaydıdır. 🔒🌸
-        </div>
       </div>
-
-      <!-- Theme Selector -->
-      <nav class="theme-selector" id="themeSelector" aria-label="Arayüz teması">
-        <button class="theme-btn active" data-theme="default"><span class="theme-btn-emoji">🔴</span> Ersin Ö. Modu (Default)</button>
-        <button class="theme-btn" data-theme="nisa"><span class="theme-btn-emoji">🎀</span> Nisa G. Modu</button>
-      </nav>
-
-      <!-- Settings Toggle -->
-      <button class="cfg-toggle" id="cfgToggle" aria-expanded="false" aria-controls="cfgPanel">⚙ Ayarlar</button>
-
-      <!-- Settings Panel -->
-      <div class="cfg-panel" id="cfgPanel" role="region" aria-label="Süre ayarları">
-        <div class="cfg-title">Süre Ayarları (dk)</div>
-        <div class="cfg-grid">
-          <div class="cfg-group">
-            <label for="inPomo">Pomodoro</label>
-            <div class="stepper">
-              <button class="stepper-btn" data-target="inPomo" data-dir="-1" aria-label="Azalt">−</button>
-              <input type="number" class="stepper-input" id="inPomo" min="1" max="120" value="25">
-              <button class="stepper-btn" data-target="inPomo" data-dir="1" aria-label="Artır">+</button>
-            </div>
-          </div>
-          <div class="cfg-group">
-            <label for="inShort">Kısa Mola</label>
-            <div class="stepper">
-              <button class="stepper-btn" data-target="inShort" data-dir="-1" aria-label="Azalt">−</button>
-              <input type="number" class="stepper-input" id="inShort" min="1" max="60" value="5">
-              <button class="stepper-btn" data-target="inShort" data-dir="1" aria-label="Artır">+</button>
-            </div>
-          </div>
-          <div class="cfg-group">
-            <label for="inLong">Uzun Mola</label>
-            <div class="stepper">
-              <button class="stepper-btn" data-target="inLong" data-dir="-1" aria-label="Azalt">−</button>
-              <input type="number" class="stepper-input" id="inLong" min="1" max="60" value="15">
-              <button class="stepper-btn" data-target="inLong" data-dir="1" aria-label="Artır">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="vol-row">
-          <span class="vol-label">🔊 Ses</span>
-          <input type="range" class="vol-range" id="volRange" min="0" max="100" value="65">
-          <span class="vol-n" id="volN">65</span>
-        </div>
-        <div class="cfg-foot">
-          <button class="ctl ctl--ghost ctl-xs" id="btnTestAlarm">🔔 Test</button>
-        </div>
-      </div>
-
     </main>
 
     <!-- ======== FOOTER ======== -->
@@ -791,7 +832,7 @@
 
   <script>
     /* ==================================================================
-       pomodorƎ · Core Engine · v2.0.0
+       pomodorƎ · Core Engine · v2.3.0
        EO Digital Lab — Air-Gapped · Zero Cookies · Zero Tracking
        Features: Themes · Daily Logs · Achievements · Notifications
        Copyright 2026 EO Digital Lab. Apache License 2.0
@@ -805,6 +846,18 @@
       var LABELS = { pomodoro: "pomodoro", short: "k\u0131sa mola", long: "uzun mola" };
       var LIMITS = { pomodoro: [1, 120], short: [1, 60], long: [1, 60] };
       var TR_MONTHS = ["Ocak","\u015Eubat","Mart","Nisan","May\u0131s","Haziran","Temmuz","A\u011Fustos","Eyl\u00FCl","Ekim","Kas\u0131m","Aral\u0131k"];
+
+      var ERSIN_QUOTES_POMO = [
+        "[B\u0130LG\u0130]: Derin odaklanma modu aktif. Siber savunma hatt\u0131 kuruluyor...",
+        "[S\u0130STEM]: G\u00FCvenlik protokolleri devrede. Kesintisiz \u00E7al\u0131\u015Fma optimize edildi.",
+        "[B\u0130LG\u0130]: Kaynaklar odaklanma hedefine tahsis edildi. Kodlama kararl\u0131l\u0131\u011F\u0131 sa\u011Fland\u0131.",
+        "[OK]: A\u011F trafi\u011Fi izole edildi. Zero Trust felsefesiyle derin \u00E7al\u0131\u015Fma ba\u015Flad\u0131."
+      ];
+
+      var ERSIN_QUOTES_BREAK = [
+        "[MOLA]: Sistem kaynaklar\u0131 dinlendiriliyor. K\u0131sa mola modu.",
+        "[MOLA]: Veritaban\u0131 optimizasyonu tamamland\u0131. Yenilenme zaman\u0131."
+      ];
 
       var NISA_QUOTES_POMO = [
         "Sihirli krall\u0131kta odaklanma ba\u015Flad\u0131! Sistem Nisa i\u00E7in en verimli modu optimize ediyor... \uD83C\uDF38",
@@ -837,6 +890,8 @@
       var $quote = document.getElementById("motivationalQuote");
       var $bar = document.getElementById("progressBar");
       var $btnGo = document.getElementById("btnGo");
+      var $btnGoIcon = document.getElementById("btnGoIcon");
+      var $btnGoText = document.getElementById("btnGoText");
       var $btnReset = document.getElementById("btnReset");
       var $card = document.getElementById("card");
       var $tabs = document.querySelectorAll(".tab");
@@ -896,12 +951,20 @@
           var raw = localStorage.getItem(KEY);
           if (raw) {
             var d = JSON.parse(raw);
-            dur.pomodoro = clamp(d.pomodoro != null ? d.pomodoro : 25, LIMITS.pomodoro[0], LIMITS.pomodoro[1]);
-            dur.short = clamp(d.short != null ? d.short : 5, LIMITS.short[0], LIMITS.short[1]);
-            dur.long = clamp(d.long != null ? d.long : 15, LIMITS.long[0], LIMITS.long[1]);
-            volume = clamp(d.volume != null ? d.volume : 0.65, 0, 1);
-            sessions = clamp(d.sessions != null ? d.sessions : 0, 0, 9999);
-            if (d.theme) currentTheme = d.theme;
+            if (d && typeof d === "object") {
+              dur.pomodoro = (typeof d.pomodoro === "number" && !isNaN(d.pomodoro)) ? clamp(d.pomodoro, LIMITS.pomodoro[0], LIMITS.pomodoro[1]) : 25;
+              dur.short = (typeof d.short === "number" && !isNaN(d.short)) ? clamp(d.short, LIMITS.short[0], LIMITS.short[1]) : 5;
+              dur.long = (typeof d.long === "number" && !isNaN(d.long)) ? clamp(d.long, LIMITS.long[0], LIMITS.long[1]) : 15;
+              volume = (typeof d.volume === "number" && !isNaN(d.volume)) ? clamp(d.volume, 0, 1) : 0.65;
+              sessions = (typeof d.sessions === "number" && !isNaN(d.sessions)) ? clamp(d.sessions, 0, 9999) : 0;
+              
+              var VALID_THEMES = ["default", "nisa"];
+              if (d.theme && VALID_THEMES.indexOf(d.theme) !== -1) {
+                currentTheme = d.theme;
+              } else {
+                currentTheme = "default";
+              }
+            }
           }
         } catch (e) { /* corrupt */ }
         $inPomo.value = dur.pomodoro;
@@ -998,17 +1061,17 @@
       }
 
       /* ==================================================================
-         MOTIVATIONAL QUOTES
+         MOTIVATIONAL QUOTES (Now supports both themes)
          ================================================================== */
       function updateQuoteText() {
-        if (!isNisa()) return;
-        var arr = mode === "pomodoro" ? NISA_QUOTES_POMO : NISA_QUOTES_BREAK;
+        var n = isNisa();
+        var arr = mode === "pomodoro" ? (n ? NISA_QUOTES_POMO : ERSIN_QUOTES_POMO) : (n ? NISA_QUOTES_BREAK : ERSIN_QUOTES_BREAK);
         var randomQuote = arr[Math.floor(Math.random() * arr.length)];
         $quote.textContent = randomQuote;
       }
 
       function updateQuoteVisibility() {
-        if (isNisa() && running) {
+        if (running) {
           $quote.classList.add("visible");
         } else {
           $quote.classList.remove("visible");
@@ -1073,7 +1136,7 @@
       /* SECURITY FIX: Prevent DOM-based XSS by securely creating elements */
       function renderLogList() {
         var today = new Date();
-        $logList.innerHTML = ""; // Clear list securely
+        $logList.textContent = ""; // Clear list securely without innerHTML
 
         for (var i = 0; i < 7; i++) {
           var d = new Date(today);
@@ -1121,11 +1184,13 @@
 
       function renderGoBtn() {
         if (running) {
-          $btnGo.innerHTML = '<span class="ctl-icon">\u23F8</span> Durdur';
+          $btnGoIcon.textContent = "\u23F8"; // Pause icon
+          $btnGoText.textContent = "Durdur";
           $btnGo.classList.add("paused");
         } else {
           var resumed = remainSec < totalSec && remainSec > 0;
-          $btnGo.innerHTML = resumed ? '<span class="ctl-icon">\u25B6</span> Devam' : '<span class="ctl-icon">\u25B6</span> Ba\u015Flat';
+          $btnGoIcon.textContent = "\u25B6"; // Play icon
+          $btnGoText.textContent = resumed ? "Devam" : "Ba\u015Flat";
           $btnGo.classList.remove("paused");
         }
       }
@@ -1215,16 +1280,18 @@
       }
 
       /* ==================================================================
-         CELEBRATION MODAL
+         CELEBRATION MODAL (Strict textContent - No innerHTML)
          ================================================================== */
       function showCelebration() {
         var n = isNisa();
         $celebEmoji.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
         $celebTitle.textContent = n ? "Sihirli Odaklanma Ba\u015Far\u0131yla Tamamland\u0131! \uD83D\uDC51" : "M\u00FCkemmel Odaklanma!";
         $celebBadge.textContent = n ? "ODAKLANMA PRENSESI \uD83D\uDC51" : "DER\u0130N ODAKLANMA USTASI";
-        $celebDesc.innerHTML = n
-          ? "Bug\u00FCn g\u00F6sterdi\u011Fin disiplin ve odaklanma harikuladeydi. Nisa'n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131'nda yeni bir rekor k\u0131r\u0131ld\u0131! \u015Eimdi hak etti\u011Fin kahve molas\u0131n\u0131 verebilirsin. EO Digital Lab seninle gurur duyuyor! \uD83C\uDF38\uD83E\uDD84"
-          : "4 Pomodoro seans\u0131n\u0131 art arda tamamlad\u0131n.<br>Bu seviye disiplin ve kararl\u0131l\u0131k gerektirir. Tebrikler!";
+        
+        $celebDesc.textContent = n
+          ? "Bug\u00FCn g\u00F6sterdi\u011Fin disiplin ve odaklanma harikuladeydi. Nisa'n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131'nda yeni bir rekor k\u0131r\u0131ld\u0131!\n\u015Eimdi hak etti\u011Fin kahve molas\u0131n\u0131 verebilirsin. EO Digital Lab seninle gurur duyuyor! \uD83C\uDF38\uD83E\uDD84"
+          : "4 Pomodoro seans\u0131n\u0131 art arda tamamlad\u0131n.\nBu seviye disiplin ve kararl\u0131l\u0131k gerektirir. Tebrikler!";
+          
         $celebModal.classList.add("active");
       }
 
