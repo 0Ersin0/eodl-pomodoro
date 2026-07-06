@@ -19,7 +19,7 @@
   <title>pomodorƎ</title>
   <style>
     /* ==================================================================
-       pomodorƎ  ·  EO Digital Lab  ·  v2.3.0
+       pomodorƎ  ·  EO Digital Lab  ·  v2.6.0
        Design System: Cybersecurity Laboratory Dark Theme
        Themes: Ersin Ö. Modu (Default Dark) · Nisa G. Modu
        Stack: Pure HTML5 + CSS3 + Vanilla JS (Zero Dependencies)
@@ -115,7 +115,7 @@
       pointer-events: none; z-index: 0;
     }
 
-    /* — Shell & Layout (Extended for Desktop) — */
+    /* — Shell & Layout — */
     .shell {
       position: relative; z-index: 1; display: flex; flex-direction: column;
       align-items: center; min-height: 100vh; width: 100%; max-width: 960px;
@@ -166,7 +166,6 @@
     .col-left, .col-right {
       display: flex; flex-direction: column; width: 100%; max-width: 400px; gap: 1.4rem; align-items: center;
     }
-    
     @media (min-width: 768px) {
       .main { padding: 3rem 0; }
       .main-content {
@@ -211,12 +210,12 @@
     }
     .card.is-break::before { background: linear-gradient(90deg, transparent, var(--break-20), transparent); }
 
-    /* — Ersin Ö. Modu: Security Shield (Hidden in Nisa Modu) — */
+    /* — Ersin Ö. Modu: Security Shield — */
     .ersin-deco { display: block; position: absolute; pointer-events: none; z-index: 2; }
     body.theme-nisa .ersin-deco { display: none; }
     .ersin-shield { top: 14px; left: 16px; width: 34px; height: 34px; opacity: 0.8; }
 
-    /* — Nisa G. Modu: Decorative SVGs (Hidden in Default Modu) — */
+    /* — Nisa G. Modu: Decorative SVGs — */
     .nisa-deco { display: none; position: absolute; pointer-events: none; z-index: 2; }
     body.theme-nisa .nisa-deco { display: block; }
     .nisa-kitty { top: 10px; left: 12px; width: 42px; height: 42px; opacity: 0.85; }
@@ -260,13 +259,11 @@
     .motivational-quote {
       width: 100%; text-align: center; line-height: 1.5; padding: 0 1rem;
       opacity: 0; transition: opacity 0.5s var(--ease); margin-top: -0.5rem;
-      /* Default Ersin Modu (Terminal Style) */
       font-family: var(--font-mono); font-size: 0.65rem; color: #39ff14;
       text-shadow: 0 0 6px rgba(57,255,20,0.5); font-style: normal;
     }
     .motivational-quote.visible { opacity: 1; }
     body.theme-nisa .motivational-quote {
-      /* Nisa Modu */
       font-family: var(--font-ui); font-size: 0.72rem; color: var(--text-ice);
       text-shadow: 0 0 8px var(--accent-20); font-style: italic;
     }
@@ -450,7 +447,7 @@
     .toast-icon { font-size: 1rem; text-shadow: none; }
 
     /* ==================================================================
-       CELEBRATION MODAL
+       CELEBRATION MODAL (4th Session Grand Modal)
        ================================================================== */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 1000;
@@ -515,6 +512,80 @@
     .modal-close-btn:active { transform: translateY(0); }
 
     /* ==================================================================
+       MINI SESSION DECISION DIALOG (1st, 2nd, 3rd sessions)
+       ================================================================== */
+    .mini-dialog-overlay {
+      position: fixed; inset: 0; z-index: 990;
+      background: rgba(5, 8, 22, 0.60); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+    }
+    .mini-dialog-overlay.active { opacity: 1; visibility: visible; }
+    body.theme-nisa .mini-dialog-overlay { background: rgba(18, 8, 18, 0.65); }
+
+    .mini-dialog-card {
+      background: var(--bg-surface); border: 1px solid var(--border-lit);
+      border-radius: var(--radius); padding: 1.6rem 1.5rem 1.3rem;
+      max-width: 360px; width: 88%; text-align: center;
+      box-shadow: var(--shadow-lg), 0 0 30px var(--accent-06);
+      position: relative; overflow: hidden;
+      transform: scale(0.92) translateY(14px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s var(--ease);
+    }
+    .mini-dialog-overlay.active .mini-dialog-card { transform: scale(1) translateY(0); }
+
+    /* Top accent line */
+    .mini-dialog-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-50), transparent);
+      transition: background 0.4s var(--ease);
+    }
+
+    .mini-dialog-emoji {
+      font-size: 2.4rem; line-height: 1; margin-bottom: 0.7rem; display: inline-block; text-shadow: none;
+      animation: miniPulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes miniPulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
+
+    .mini-dialog-title {
+      font-size: 0.82rem; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem;
+      text-shadow: 0 0 10px var(--accent-10);
+    }
+
+    .mini-dialog-text {
+      font-size: 0.72rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.1rem;
+      font-weight: 500; padding: 0 0.3rem;
+    }
+
+    .mini-dialog-actions {
+      display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    }
+    .mini-dialog-btn {
+      padding: 0.55rem 1rem; border-radius: var(--radius-sm); font-family: var(--font-ui);
+      font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all var(--speed) var(--ease);
+      display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; text-shadow: none;
+    }
+    .mini-dialog-btn--break {
+      background: var(--break); color: #fff; border: 1px solid var(--break);
+      box-shadow: 0 2px 10px var(--break-20);
+    }
+    .mini-dialog-btn--break:hover { filter: brightness(0.88); transform: translateY(-1px); box-shadow: 0 4px 16px var(--break-20); }
+    .mini-dialog-btn--break:active { transform: translateY(0); }
+    .mini-dialog-btn--continue {
+      background: var(--bg-elevated); color: var(--text-ice); border: 1px solid var(--border-lit);
+      box-shadow: var(--shadow);
+    }
+    .mini-dialog-btn--continue:hover { background: var(--bg-hover); border-color: var(--accent-20); transform: translateY(-1px); }
+    .mini-dialog-btn--continue:active { transform: translateY(0); }
+
+    @media (max-width: 380px) {
+      .mini-dialog-actions { flex-direction: column; }
+      .mini-dialog-btn { width: 100%; justify-content: center; }
+    }
+
+    /* ==================================================================
        SILENT SIGNAL — Edge Flash
        ================================================================== */
     .edge-flash {
@@ -531,7 +602,7 @@
     }
 
     /* ==================================================================
-       FOOTER (Enhanced EO Digital Lab Branding)
+       FOOTER
        ================================================================== */
     .footer {
       width: 100%; text-align: center; padding: 2rem 0 2.2rem;
@@ -562,6 +633,8 @@
       .nisa-kitty { width: 32px; height: 32px; }
       .nisa-unicorn { width: 34px; height: 34px; }
       .ersin-shield { width: 28px; height: 28px; }
+      .mini-dialog-card { padding: 1.3rem 1.1rem 1.1rem; }
+      .mini-dialog-emoji { font-size: 2rem; }
     }
     @media (max-width: 340px) { .clock { font-size: 3.2rem; } .cfg-grid { grid-template-columns: 1fr; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
@@ -579,10 +652,9 @@
     <span id="toastMsg">Tamamlandı!</span>
   </div>
 
-  <!-- Celebration Modal -->
+  <!-- Celebration Modal (4th Session Grand Celebration) -->
   <div class="modal-overlay" id="celebModal">
     <div class="modal-card">
-      <!-- Floating hearts (Nisa only) -->
       <div class="modal-hearts">
         <span class="m-heart">💖</span><span class="m-heart">💕</span><span class="m-heart">🩷</span>
         <span class="m-heart">💗</span><span class="m-heart">💖</span><span class="m-heart">🎀</span>
@@ -590,8 +662,22 @@
       <div class="modal-emoji" id="celebEmoji">🔥</div>
       <h2 class="modal-title" id="celebTitle">Mükemmel Odaklanma!</h2>
       <div class="modal-badge" id="celebBadge">Derin Odaklanma Ustası</div>
-      <p class="modal-desc" id="celebDesc">4 Pomodoro seansını art arda tamamladın.<br>Bu seviye disiplin ve kararlılık gerektirir. Tebrikler!</p>
+      <p class="modal-desc" id="celebDesc">4 Pomodoro seansını art arda tamamladın.
+Bu seviye disiplin ve kararlılık gerektirir. Tebrikler!</p>
       <button class="modal-close-btn" id="celebClose">Çalışmaya Devam Et</button>
+    </div>
+  </div>
+
+  <!-- Mini Session Decision Dialog (1st, 2nd, 3rd Sessions) -->
+  <div class="mini-dialog-overlay" id="miniDialog">
+    <div class="mini-dialog-card">
+      <div class="mini-dialog-emoji" id="miniDialogEmoji">☕</div>
+      <div class="mini-dialog-title" id="miniDialogTitle">Seans Tamamlandı</div>
+      <p class="mini-dialog-text" id="miniDialogText">Ne yapmak istersin?</p>
+      <div class="mini-dialog-actions">
+        <button class="mini-dialog-btn mini-dialog-btn--break" id="miniDialogBreak">☕ Mola Protokolü</button>
+        <button class="mini-dialog-btn mini-dialog-btn--continue" id="miniDialogContinue">🚀 Devam Edelim!</button>
+      </div>
     </div>
   </div>
 
@@ -603,7 +689,7 @@
         <div class="logo-mark" aria-hidden="true"></div>
         <h1 class="brand-name">pomodor<span class="accent">Ǝ</span></h1>
       </div>
-      <span class="ver">v2.3.0</span>
+      <span class="ver">v2.6.0</span>
     </header>
 
     <!-- ======== MAIN ======== -->
@@ -653,25 +739,18 @@
 
             <!-- Nisa G. Modu: Unicorn (inline SVG — zero outbound) -->
             <svg class="nisa-deco nisa-unicorn" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <!-- Horn -->
               <polygon points="50,4 44,30 56,30" fill="#ffd700" stroke="#e6c200" stroke-width="0.8"/>
               <line x1="47" y1="14" x2="53" y2="14" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
               <line x1="46" y1="20" x2="54" y2="20" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
               <line x1="45.5" y1="26" x2="54.5" y2="26" stroke="#fff" stroke-width="0.6" opacity="0.5"/>
-              <!-- Head -->
               <ellipse cx="50" cy="55" rx="26" ry="30" fill="#fff" stroke="#ddd" stroke-width="1"/>
-              <!-- Ear -->
               <polygon points="30,28 24,12 38,25" fill="#fff" stroke="#ddd" stroke-width="0.8"/>
               <polygon points="32,26 28,16 36,24" fill="var(--accent)" opacity="0.3"/>
-              <!-- Eye -->
               <ellipse cx="56" cy="48" rx="4" ry="4.5" fill="#333"/>
               <circle cx="57.5" cy="46.5" r="1.2" fill="#fff"/>
-              <!-- Nostril -->
               <circle cx="62" cy="62" r="1.2" fill="#ddd"/>
-              <!-- Mane -->
               <path d="M28,32 Q18,42 22,56 Q14,50 18,38 Q10,48 14,34" fill="var(--accent)" opacity="0.5" stroke="none"/>
               <path d="M24,38 Q16,48 20,60" fill="none" stroke="var(--break)" stroke-width="1.5" opacity="0.4"/>
-              <!-- Sparkle star -->
               <polygon points="82,18 84,24 90,24 85,28 87,34 82,30 77,34 79,28 74,24 80,24" fill="#ffd700" opacity="0.7">
                 <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
               </polygon>
@@ -700,7 +779,6 @@
               <span class="clock-label" id="clockLabel">pomodoro</span>
             </div>
 
-            <!-- Motivational Quote (Dinamik Terminal Log & Nisa Sözleri) -->
             <div class="motivational-quote" id="motivationalQuote"></div>
 
             <div class="progress-track">
@@ -778,14 +856,11 @@
         <!-- Right Column: Stats & Logs -->
         <div class="col-right">
           
-          <!-- Stats & Achievement Panel -->
           <div class="stats-panel" id="statsPanel">
             <div class="stats-header">
               <span class="stats-title" id="statsPanelTitle">📊 Çalışma Logları ve Başarı Durumu</span>
               <button class="stats-toggle-btn" id="logsToggle" aria-label="Geçmişi göster/gizle">▼ Geçmiş</button>
             </div>
-
-            <!-- Achievement Row -->
             <div class="achieve-row">
               <span class="achieve-icon" id="achieveIcon">🌱</span>
               <div class="achieve-body">
@@ -794,8 +869,6 @@
                 <div class="achieve-bar-track"><div class="achieve-bar-fill" id="achieveBar" style="width:0%"></div></div>
               </div>
             </div>
-
-            <!-- Today Stats -->
             <div class="today-row">
               <div class="today-stat">
                 <div class="today-val" id="todaySessions">0</div>
@@ -806,8 +879,6 @@
                 <div class="today-label" id="todayHoursLabel">Odaklanma Süresi</div>
               </div>
             </div>
-
-            <!-- 7-Day Log (collapsible) -->
             <div class="log-section" id="logSection">
               <div class="log-title" id="logSectionTitle">Son 7 Gün</div>
               <ul class="log-list" id="logList"></ul>
@@ -832,9 +903,10 @@
 
   <script>
     /* ==================================================================
-       pomodorƎ · Core Engine · v2.3.0
+       pomodorƎ · Core Engine · v2.6.0
        EO Digital Lab — Air-Gapped · Zero Cookies · Zero Tracking
        Features: Themes · Daily Logs · Achievements · Notifications
+       Smart Assistant · Mini Decision Dialog · Progressive Motivation
        Copyright 2026 EO Digital Lab. Apache License 2.0
        ================================================================== */
     (function () {
@@ -847,18 +919,17 @@
       var LIMITS = { pomodoro: [1, 120], short: [1, 60], long: [1, 60] };
       var TR_MONTHS = ["Ocak","\u015Eubat","Mart","Nisan","May\u0131s","Haziran","Temmuz","A\u011Fustos","Eyl\u00FCl","Ekim","Kas\u0131m","Aral\u0131k"];
 
+      /* — Running Quotes (Shown while timer is active) — */
       var ERSIN_QUOTES_POMO = [
         "[B\u0130LG\u0130]: Derin odaklanma modu aktif. Siber savunma hatt\u0131 kuruluyor...",
         "[S\u0130STEM]: G\u00FCvenlik protokolleri devrede. Kesintisiz \u00E7al\u0131\u015Fma optimize edildi.",
         "[B\u0130LG\u0130]: Kaynaklar odaklanma hedefine tahsis edildi. Kodlama kararl\u0131l\u0131\u011F\u0131 sa\u011Fland\u0131.",
         "[OK]: A\u011F trafi\u011Fi izole edildi. Zero Trust felsefesiyle derin \u00E7al\u0131\u015Fma ba\u015Flad\u0131."
       ];
-
       var ERSIN_QUOTES_BREAK = [
         "[MOLA]: Sistem kaynaklar\u0131 dinlendiriliyor. K\u0131sa mola modu.",
         "[MOLA]: Veritaban\u0131 optimizasyonu tamamland\u0131. Yenilenme zaman\u0131."
       ];
-
       var NISA_QUOTES_POMO = [
         "Sihirli krall\u0131kta odaklanma ba\u015Flad\u0131! Sistem Nisa i\u00E7in en verimli modu optimize ediyor... \uD83C\uDF38",
         "Gelece\u011Fin b\u00FCy\u00FCk ba\u015Far\u0131lar\u0131 \u015Fu an bu ekranda kodlan\u0131yor. Harikas\u0131n Nisa! \uD83E\uDD84",
@@ -866,11 +937,35 @@
         "Derin odaklanma modu aktif. Bu krall\u0131kta senin disiplinin kurallar\u0131 koyar! \u2728",
         "K\u00FC\u00E7\u00FCk bir mola \u00F6ncesi harika bir seri. Ad\u0131m ad\u0131m hedeflere... \u2615"
       ];
-
       var NISA_QUOTES_BREAK = [
         "Harika bir seans bitti! \u015Eimdi zihnini dinlendirme ve g\u00FCzel bir kahve alma zaman\u0131 Nisa. \uD83C\uDF38\u2615",
         "G\u00F6zlerini ekrandan ay\u0131r, derin bir nefes al. Krall\u0131\u011F\u0131n krali\u00E7esi k\u0131sa bir dinlenmeyi hak etti! \uD83D\uDC51\uD83E\uDD84"
       ];
+
+      /* — Mini Decision Dialog: Session-Specific Texts & Button Labels — */
+      var ERSIN_MINI_TEXTS = [
+        "Tebrikler Ersin, ilk veri blo\u011Fu ba\u015Far\u0131yla i\u015Flendi. Siber hatlar kararl\u0131. \u015Eimdi sistem optimizasyonu i\u00E7in mola protokol\u00FCn\u00FC ba\u015Flatal\u0131m m\u0131, yoksa direkt sonraki operasyona m\u0131 ge\u00E7elim?",
+        "2. Seans tamamland\u0131, siber kalkan %50 g\u00FC\u00E7te! Odaklanma ritmin harika. K\u0131sa bir sistem dinlendirmesi mi, yoksa kodlamaya tam gaz devam m\u0131?",
+        "3. Seans m\u00FChUrlendi! B\u00FCy\u00FCk d\u00F6ng\u00FCye son bir ad\u0131m kald\u0131. Disiplinin sars\u0131lmaz d\u00FCzeyde. Son d\u00FCzl\u00FCk \u00F6ncesi derin bir nefes alal\u0131m m\u0131, devam m\u0131?"
+      ];
+      var ERSIN_MINI_BREAK_LABELS = ["\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC"];
+      var ERSIN_MINI_CONT_LABELS = ["\uD83D\uDE80 Es Ge\u00E7, Devam Edelim!", "\uD83D\uDE80 Es Ge\u00E7, Devam!", "\uD83D\uDE80 Devam Edelim!"];
+      var ERSIN_MINI_TITLES = ["1. SEANS TAMAMLANDI", "2. SEANS TAMAMLANDI", "3. SEANS TAMAMLANDI"];
+      var ERSIN_MINI_EMOJIS = ["\uD83D\uDEE1\uFE0F", "\uD83D\uDD25", "\u26A1"];
+
+      var NISA_MINI_TEXTS = [
+        "Aferin sana Nisa! \uD83D\uDC95 \u0130lk seans\u0131 ba\u015Far\u0131yla bitirdin, harika gidiyorsun. \u015Eimdi zihnini dinlendirmek i\u00E7in tatl\u0131 bir kahve molas\u0131 verelim mi, yoksa h\u0131z\u0131n\u0131 hi\u00E7 kesmeden devam m\u0131 ediyoruz? \uD83C\uDF38",
+        "S\u00FCpersin Nisa! \u0130kinci seans da bitti ve sen bug\u00FCn ger\u00E7ekten \u00E7ok disiplinlisin. \uD83D\uDC51 Enerjini ve o harika motivasyonunu tazelemek i\u00E7in k\u0131sa bir mola ister misin, yoksa devam m\u0131? \u2728",
+        "\u00DC\u00E7\u00FCnc\u00FC seans tamamland\u0131! B\u00FCy\u00FCk kutlama \u00F6ncesi son virajday\u0131z. \uD83D\uDC96 K\u00FC\u00E7\u00FCk bir dinlenme zihnine \u00E7ok iyi gelirdi ama devam etmek istersen de sonuna kadar destek\u00E7inim! Hadi karar ver: \uD83E\uDD84"
+      ];
+      var NISA_MINI_BREAK_LABELS = ["\uD83C\uDF80 K\u0131sa Bir Mola", "\uD83C\uDF80 K\u0131sa Bir Mola", "\uD83C\uDF80 K\u0131sa Bir Mola"];
+      var NISA_MINI_CONT_LABELS = ["\u2728 Odaklanmaya Devam!", "\u2728 Odaklanmaya Devam!", "\u2728 Odaklanmaya Devam!"];
+      var NISA_MINI_TITLES = ["\uD83C\uDF38 1. Seans Bitti!", "\uD83D\uDC51 2. Seans Bitti!", "\uD83D\uDC96 3. Seans Bitti!"];
+      var NISA_MINI_EMOJIS = ["\uD83C\uDF38", "\uD83D\uDC51", "\uD83D\uDC96"];
+
+      /* — Soft Skip Advice (Toast when skipping break from mini dialog) — */
+      var ERSIN_SKIP_ADVICE = "[\u00D6NER\u0130]: Sistem kararl\u0131l\u0131\u011F\u0131 i\u00E7in mola \u00F6nerilir, ancak haz\u0131rsan\u0131z odaklanmaya devam edebilirsiniz.";
+      var NISA_SKIP_ADVICE = "K\u00FC\u00E7\u00FCk bir mola vermen harika olurdu ama \u00E7al\u0131\u015Fmaya devam etmek istersen sihirli g\u00FC\u00E7lerinle yan\u0131nday\u0131m! \u2728";
 
       /* ---- State ---- */
       var mode = "pomodoro";
@@ -929,6 +1024,14 @@
       var $logList = document.getElementById("logList");
       var $logsToggle = document.getElementById("logsToggle");
 
+      /* Mini Dialog DOM */
+      var $miniDialog = document.getElementById("miniDialog");
+      var $miniDialogEmoji = document.getElementById("miniDialogEmoji");
+      var $miniDialogTitle = document.getElementById("miniDialogTitle");
+      var $miniDialogText = document.getElementById("miniDialogText");
+      var $miniDialogBreak = document.getElementById("miniDialogBreak");
+      var $miniDialogContinue = document.getElementById("miniDialogContinue");
+
       /* ==================================================================
          BOOT
          ================================================================== */
@@ -957,13 +1060,8 @@
               dur.long = (typeof d.long === "number" && !isNaN(d.long)) ? clamp(d.long, LIMITS.long[0], LIMITS.long[1]) : 15;
               volume = (typeof d.volume === "number" && !isNaN(d.volume)) ? clamp(d.volume, 0, 1) : 0.65;
               sessions = (typeof d.sessions === "number" && !isNaN(d.sessions)) ? clamp(d.sessions, 0, 9999) : 0;
-              
               var VALID_THEMES = ["default", "nisa"];
-              if (d.theme && VALID_THEMES.indexOf(d.theme) !== -1) {
-                currentTheme = d.theme;
-              } else {
-                currentTheme = "default";
-              }
+              currentTheme = (d.theme && VALID_THEMES.indexOf(d.theme) !== -1) ? d.theme : "default";
             }
           }
         } catch (e) { /* corrupt */ }
@@ -987,13 +1085,12 @@
 
       function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-      /* ---- Daily Logs (localStorage: pomodore_daily_logs) ---- */
+      /* ---- Daily Logs ---- */
       function todayKey() {
         var d = new Date();
         return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       }
 
-      /* SECURITY FIX: Prevent Prototype Pollution by using Object.create(null) */
       function loadLogs() {
         dailyLogs = Object.create(null);
         try {
@@ -1008,7 +1105,7 @@
               }
             }
           }
-        } catch (e) { /* keep clean Object.create(null) on error */ }
+        } catch (e) { /* safe fallback */ }
       }
 
       function saveLogs() {
@@ -1061,21 +1158,22 @@
       }
 
       /* ==================================================================
-         MOTIVATIONAL QUOTES (Now supports both themes)
+         MOTIVATIONAL QUOTES
          ================================================================== */
       function updateQuoteText() {
         var n = isNisa();
         var arr = mode === "pomodoro" ? (n ? NISA_QUOTES_POMO : ERSIN_QUOTES_POMO) : (n ? NISA_QUOTES_BREAK : ERSIN_QUOTES_BREAK);
-        var randomQuote = arr[Math.floor(Math.random() * arr.length)];
-        $quote.textContent = randomQuote;
+        $quote.textContent = arr[Math.floor(Math.random() * arr.length)];
       }
 
       function updateQuoteVisibility() {
-        if (running) {
-          $quote.classList.add("visible");
-        } else {
-          $quote.classList.remove("visible");
-        }
+        if (running) { $quote.classList.add("visible"); }
+        else { $quote.classList.remove("visible"); }
+      }
+
+      function showQuoteMessage(text) {
+        $quote.textContent = text;
+        $quote.classList.add("visible");
       }
 
       /* ==================================================================
@@ -1133,40 +1231,32 @@
         $todayHours.textContent = h + "s " + m + "dk";
       }
 
-      /* SECURITY FIX: Prevent DOM-based XSS by securely creating elements */
       function renderLogList() {
         var today = new Date();
-        $logList.textContent = ""; // Clear list securely without innerHTML
-
+        $logList.textContent = "";
         for (var i = 0; i < 7; i++) {
           var d = new Date(today);
           d.setDate(d.getDate() - i);
           var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
           var entry = dailyLogs[key];
-          
           var dateStr = String(d.getDate()).padStart(2, "0") + " " + TR_MONTHS[d.getMonth()];
           if (i === 0) dateStr += " (Bug\u00FCn)";
-
           var li = document.createElement("li");
           li.className = "log-item";
-
           var dateSpan = document.createElement("span");
           dateSpan.className = "log-date";
-          dateSpan.textContent = dateStr; // Safe content injection
-
+          dateSpan.textContent = dateStr;
           var valSpan = document.createElement("span");
           valSpan.className = "log-val";
-
           if (entry && Number(entry.sessions) > 0) {
             var mins = Number(entry.minutes) || 0;
             var h = Math.floor(mins / 60);
             var m = mins % 60;
             var timeStr = h > 0 ? h + " Saat " + m + " dk" : m + " dk";
-            valSpan.textContent = timeStr + " (" + Number(entry.sessions) + " Seans)"; // Safe and type-coerced
+            valSpan.textContent = timeStr + " (" + Number(entry.sessions) + " Seans)";
           } else {
             valSpan.textContent = "\u2014";
           }
-
           li.appendChild(dateSpan);
           li.appendChild(valSpan);
           $logList.appendChild(li);
@@ -1184,12 +1274,12 @@
 
       function renderGoBtn() {
         if (running) {
-          $btnGoIcon.textContent = "\u23F8"; // Pause icon
+          $btnGoIcon.textContent = "\u23F8";
           $btnGoText.textContent = "Durdur";
           $btnGo.classList.add("paused");
         } else {
           var resumed = remainSec < totalSec && remainSec > 0;
-          $btnGoIcon.textContent = "\u25B6"; // Play icon
+          $btnGoIcon.textContent = "\u25B6";
           $btnGoText.textContent = resumed ? "Devam" : "Ba\u015Flat";
           $btnGo.classList.remove("paused");
         }
@@ -1206,7 +1296,7 @@
         renderGoBtn(); syncTitle();
         tick = setInterval(function () {
           remainSec--;
-          if (remainSec <= 0) { remainSec = 0; stop(); onComplete(); }
+          if (remainSec <= 0) { remainSec = 0; render(); stop(); onComplete(); return; }
           render();
         }, 1000);
       }
@@ -1222,20 +1312,24 @@
         render(); renderGoBtn();
       }
 
-      function setMode(m) {
-        if (m === mode && !running && remainSec === totalSec) return;
-        stop(); mode = m;
+      function setMode(newMode) {
+        if (newMode === mode && !running && remainSec === totalSec) return;
+        stop(); mode = newMode;
         $tabs.forEach(function (t) {
-          var a = t.dataset.mode === m;
+          var a = t.dataset.mode === newMode;
           t.classList.toggle("active", a); t.setAttribute("aria-selected", a);
         });
         totalSec = dur[mode] * 60; remainSec = totalSec;
         render(); renderGoBtn();
       }
 
+      /* ==================================================================
+         ON COMPLETE — Smart Decision Flow
+         ================================================================== */
       function onComplete() {
         fireAlarm();
         fireEdgeFlash();
+
         if (mode === "pomodoro") {
           sessions++;
           logPomodoro();
@@ -1244,13 +1338,58 @@
           renderAchievement();
           renderTodayStats();
           renderLogList();
-          if (sessions % 4 === 0) showCelebration();
-          sendNotification("Pomodoro tamamland\u0131!", "Mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
-          notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131! Mola zaman\u0131.");
+
+          var cyclePos = sessions % 4;
+
+          if (cyclePos === 0) {
+            /* 4th session: Grand Celebration Modal + Auto Long Break */
+            showCelebration();
+            sendNotification("Pomodoro tamamland\u0131!", "Uzun mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
+            notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131! Uzun mola zaman\u0131.");
+            setMode("long");
+          } else {
+            /* 1st, 2nd, 3rd session: Mini Decision Dialog */
+            showMiniDialog(cyclePos);
+            sendNotification("Pomodoro tamamland\u0131!", "Mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
+            notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131!");
+          }
         } else {
+          /* Break completed — auto-switch back to pomodoro */
           sendNotification("Mola bitti!", "Odaklanma zaman\u0131.");
           notify("\u2705", "Mola bitti! Odaklanma zaman\u0131.");
+          setMode("pomodoro");
         }
+      }
+
+      /* ==================================================================
+         MINI SESSION DECISION DIALOG (Strict textContent — No innerHTML)
+         ================================================================== */
+      function showMiniDialog(cyclePos) {
+        var n = isNisa();
+        var idx = cyclePos - 1;
+        $miniDialogEmoji.textContent = n ? NISA_MINI_EMOJIS[idx] : ERSIN_MINI_EMOJIS[idx];
+        $miniDialogTitle.textContent = n ? NISA_MINI_TITLES[idx] : ERSIN_MINI_TITLES[idx];
+        $miniDialogText.textContent = n ? NISA_MINI_TEXTS[idx] : ERSIN_MINI_TEXTS[idx];
+        $miniDialogBreak.textContent = n ? NISA_MINI_BREAK_LABELS[idx] : ERSIN_MINI_BREAK_LABELS[idx];
+        $miniDialogContinue.textContent = n ? NISA_MINI_CONT_LABELS[idx] : ERSIN_MINI_CONT_LABELS[idx];
+        $miniDialog.classList.add("active");
+      }
+
+      function hideMiniDialog() {
+        $miniDialog.classList.remove("active");
+      }
+
+      function onMiniBreak() {
+        hideMiniDialog();
+        setMode("short");
+        start();
+      }
+
+      function onMiniContinue() {
+        hideMiniDialog();
+        var n = isNisa();
+        notify(n ? "\uD83D\uDC95" : "\u26A0\uFE0F", n ? NISA_SKIP_ADVICE : ERSIN_SKIP_ADVICE);
+        setMode("pomodoro");
       }
 
       /* ==================================================================
@@ -1280,18 +1419,16 @@
       }
 
       /* ==================================================================
-         CELEBRATION MODAL (Strict textContent - No innerHTML)
+         CELEBRATION MODAL (4th Session — Strict textContent)
          ================================================================== */
       function showCelebration() {
         var n = isNisa();
         $celebEmoji.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
         $celebTitle.textContent = n ? "Sihirli Odaklanma Ba\u015Far\u0131yla Tamamland\u0131! \uD83D\uDC51" : "M\u00FCkemmel Odaklanma!";
         $celebBadge.textContent = n ? "ODAKLANMA PRENSESI \uD83D\uDC51" : "DER\u0130N ODAKLANMA USTASI";
-        
         $celebDesc.textContent = n
           ? "Bug\u00FCn g\u00F6sterdi\u011Fin disiplin ve odaklanma harikuladeydi. Nisa'n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131'nda yeni bir rekor k\u0131r\u0131ld\u0131!\n\u015Eimdi hak etti\u011Fin kahve molas\u0131n\u0131 verebilirsin. EO Digital Lab seninle gurur duyuyor! \uD83C\uDF38\uD83E\uDD84"
           : "4 Pomodoro seans\u0131n\u0131 art arda tamamlad\u0131n.\nBu seviye disiplin ve kararl\u0131l\u0131k gerektirir. Tebrikler!";
-          
         $celebModal.classList.add("active");
       }
 
@@ -1395,9 +1532,16 @@
         $celebClose.addEventListener("click", hideCelebration);
         $celebModal.addEventListener("click", function (e) { if (e.target === $celebModal) hideCelebration(); });
 
+        /* Mini Decision Dialog buttons */
+        $miniDialogBreak.addEventListener("click", onMiniBreak);
+        $miniDialogContinue.addEventListener("click", onMiniContinue);
+
         /* Keyboard shortcuts */
         document.addEventListener("keydown", function (e) {
-          if (e.code === "Escape" && $celebModal.classList.contains("active")) { hideCelebration(); return; }
+          if (e.code === "Escape") {
+            if ($celebModal.classList.contains("active")) { hideCelebration(); return; }
+            if ($miniDialog.classList.contains("active")) { hideMiniDialog(); return; }
+          }
           if (e.target.tagName === "INPUT") return;
           switch (e.code) {
             case "Space": e.preventDefault(); running ? stop() : start(); break;
