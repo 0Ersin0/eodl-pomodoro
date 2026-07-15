@@ -23,7 +23,7 @@
     /* ==================================================================
        pomodorƎ  ·  EO Digital Lab  ·  v2.6.0
        Design System: Cybersecurity Laboratory Dark Theme
-       Themes: Ersin Ö. Modu (Default Dark) · Nisa G. Modu
+       Themes: Admin Modu (Default) · Ares Modu · Orchid Modu
        Stack: Pure HTML5 + CSS3 + Vanilla JS (Zero Dependencies)
        ================================================================== */
 
@@ -36,7 +36,7 @@
       box-sizing: border-box;
     }
 
-    /* — Design Tokens (Ersin Ö. Modu / Default Dark) — */
+    /* — Design Tokens (Admin Modu / Default Dark) — */
     :root {
       --bg-abyss: #050816;
       --bg-surface: #0f172a;
@@ -69,28 +69,52 @@
       --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* ======== THEME: Nisa G. Modu ======== */
-    body.theme-nisa {
-      --bg-abyss: #120812;
-      --bg-surface: #1a0f1a;
-      --bg-elevated: #2a1528;
-      --bg-hover: #3a1d36;
+    /* ======== THEME: Ares Modu (Tactical) ======== */
+    body.theme-ares {
+      --bg-abyss: #0a0e0a;
+      --bg-surface: #121a12;
+      --bg-elevated: #1c2a1c;
+      --bg-hover: #263626;
       --text-ice: #ffffff;
-      --text-muted: #f3d8e8;
-      --text-dim: #d8b4cc;
-      --text-ghost: #a67c9c;
-      --accent: #ff6b9d;
-      --accent-50: rgba(255, 107, 157, 0.50);
-      --accent-20: rgba(255, 107, 157, 0.20);
-      --accent-10: rgba(255, 107, 157, 0.10);
-      --accent-06: rgba(255, 107, 157, 0.06);
-      --break: #c084fc;
-      --break-50: rgba(192, 132, 252, 0.50);
-      --break-20: rgba(192, 132, 252, 0.20);
-      --break-10: rgba(192, 132, 252, 0.10);
-      --break-06: rgba(192, 132, 252, 0.06);
-      --border: rgba(255, 107, 157, 0.08);
-      --border-lit: rgba(255, 107, 157, 0.16);
+      --text-muted: #d4e8d4;
+      --text-dim: #a8c8a8;
+      --text-ghost: #6b8a6b;
+      --accent: #00e676;
+      --accent-50: rgba(0, 230, 118, 0.50);
+      --accent-20: rgba(0, 230, 118, 0.20);
+      --accent-10: rgba(0, 230, 118, 0.10);
+      --accent-06: rgba(0, 230, 118, 0.06);
+      --break: #26c6da;
+      --break-50: rgba(38, 198, 218, 0.50);
+      --break-20: rgba(38, 198, 218, 0.20);
+      --break-10: rgba(38, 198, 218, 0.10);
+      --break-06: rgba(38, 198, 218, 0.06);
+      --border: rgba(0, 230, 118, 0.08);
+      --border-lit: rgba(0, 230, 118, 0.16);
+    }
+
+    /* ======== THEME: Orchid Modu (Aesthetic) ======== */
+    body.theme-orchid {
+      --bg-abyss: #0d0a1a;
+      --bg-surface: #1a1025;
+      --bg-elevated: #261438;
+      --bg-hover: #341d48;
+      --text-ice: #ffffff;
+      --text-muted: #e8d8f0;
+      --text-dim: #c8a8d8;
+      --text-ghost: #9070a8;
+      --accent: #c084fc;
+      --accent-50: rgba(192, 132, 252, 0.50);
+      --accent-20: rgba(192, 132, 252, 0.20);
+      --accent-10: rgba(192, 132, 252, 0.10);
+      --accent-06: rgba(192, 132, 252, 0.06);
+      --break: #f9a8d4;
+      --break-50: rgba(249, 168, 212, 0.50);
+      --break-20: rgba(249, 168, 212, 0.20);
+      --break-10: rgba(249, 168, 212, 0.10);
+      --break-06: rgba(249, 168, 212, 0.06);
+      --border: rgba(192, 132, 252, 0.08);
+      --border-lit: rgba(192, 132, 252, 0.16);
     }
 
     /* — Base — */
@@ -113,8 +137,12 @@
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 49, 49, 0.3);
     }
 
-    body.theme-nisa {
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 107, 157, 0.4);
+    body.theme-ares {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 230, 118, 0.3);
+    }
+
+    body.theme-orchid {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(192, 132, 252, 0.3);
     }
 
     /* — Ambient Glow — */
@@ -385,144 +413,9 @@
       background: linear-gradient(90deg, transparent, var(--break-20), transparent);
     }
 
-    /* — Ersin Ö. Modu: Security Shield — */
-    .ersin-deco {
-      display: block;
-      position: absolute;
-      pointer-events: none;
-      z-index: 2;
-    }
 
-    body.theme-nisa .ersin-deco {
-      display: none;
-    }
 
-    .ersin-shield {
-      top: 14px;
-      left: 16px;
-      width: 34px;
-      height: 34px;
-      opacity: 0.8;
-    }
 
-    /* — Nisa G. Modu: Decorative SVGs — */
-    .nisa-deco {
-      display: none;
-      position: absolute;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    body.theme-nisa .nisa-deco {
-      display: block;
-    }
-
-    .nisa-kitty {
-      top: 10px;
-      left: 12px;
-      width: 42px;
-      height: 42px;
-      opacity: 0.85;
-    }
-
-    .nisa-unicorn {
-      top: 8px;
-      right: 12px;
-      width: 44px;
-      height: 44px;
-      opacity: 0.85;
-    }
-
-    .nisa-bow-center {
-      top: -1px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 20px;
-      opacity: 0.9;
-      animation: bowFloat 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes bowFloat {
-      0% {
-        transform: translateX(-50%) translateY(0);
-      }
-
-      100% {
-        transform: translateX(-50%) translateY(-2px);
-      }
-    }
-
-    /* Sparkle particles (Nisa only) */
-    .nisa-sparkles {
-      display: none;
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    body.theme-nisa .nisa-sparkles {
-      display: block;
-    }
-
-    .sparkle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--accent-50);
-      animation: sparkleFloat 4s ease-in-out infinite;
-    }
-
-    .sparkle:nth-child(1) {
-      top: 15%;
-      left: 8%;
-      animation-delay: 0s;
-    }
-
-    .sparkle:nth-child(2) {
-      top: 60%;
-      right: 10%;
-      animation-delay: 1.2s;
-      animation-duration: 3.5s;
-    }
-
-    .sparkle:nth-child(3) {
-      top: 80%;
-      left: 20%;
-      animation-delay: 2.4s;
-      animation-duration: 5s;
-    }
-
-    .sparkle:nth-child(4) {
-      top: 25%;
-      right: 18%;
-      animation-delay: 0.8s;
-      animation-duration: 4.2s;
-    }
-
-    .sparkle:nth-child(5) {
-      top: 45%;
-      left: 85%;
-      animation-delay: 1.8s;
-      animation-duration: 3.8s;
-    }
-
-    @keyframes sparkleFloat {
-
-      0%,
-      100% {
-        opacity: 0;
-        transform: scale(0.5) translateY(0);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.2) translateY(-8px);
-      }
-    }
 
     /* — Countdown — */
     .clock-zone {
@@ -582,11 +475,19 @@
       opacity: 1;
     }
 
-    body.theme-nisa .motivational-quote {
+    body.theme-ares .motivational-quote {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #00e676;
+      text-shadow: 0 0 6px rgba(0, 230, 118, 0.5);
+      font-style: normal;
+    }
+
+    body.theme-orchid .motivational-quote {
       font-family: var(--font-ui);
       font-size: 0.72rem;
-      color: var(--text-ice);
-      text-shadow: 0 0 8px var(--accent-20);
+      color: #e0b0ff;
+      text-shadow: 0 0 8px rgba(192, 132, 252, 0.3);
       font-style: italic;
     }
 
@@ -1240,8 +1141,12 @@
       visibility: visible;
     }
 
-    body.theme-nisa .modal-overlay {
-      background: rgba(18, 8, 18, 0.85);
+    body.theme-ares .modal-overlay {
+      background: rgba(10, 14, 10, 0.85);
+    }
+
+    body.theme-orchid .modal-overlay {
+      background: rgba(13, 10, 26, 0.85);
     }
 
     .modal-card {
@@ -1304,78 +1209,7 @@
       }
     }
 
-    /* Floating hearts (Nisa modal only) */
-    .modal-hearts {
-      display: none;
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
 
-    body.theme-nisa .modal-hearts {
-      display: block;
-    }
-
-    .m-heart {
-      position: absolute;
-      font-size: 1.2rem;
-      opacity: 0;
-      animation: heartRise 3s ease-in infinite;
-      text-shadow: none;
-    }
-
-    .m-heart:nth-child(1) {
-      left: 10%;
-      animation-delay: 0s;
-    }
-
-    .m-heart:nth-child(2) {
-      left: 25%;
-      animation-delay: 0.6s;
-      font-size: 0.9rem;
-    }
-
-    .m-heart:nth-child(3) {
-      left: 45%;
-      animation-delay: 1.2s;
-    }
-
-    .m-heart:nth-child(4) {
-      left: 65%;
-      animation-delay: 0.3s;
-      font-size: 1rem;
-    }
-
-    .m-heart:nth-child(5) {
-      left: 80%;
-      animation-delay: 0.9s;
-      font-size: 0.8rem;
-    }
-
-    .m-heart:nth-child(6) {
-      left: 55%;
-      animation-delay: 1.8s;
-      font-size: 1.1rem;
-    }
-
-    @keyframes heartRise {
-      0% {
-        bottom: -10%;
-        opacity: 0;
-        transform: scale(0.5) rotate(0deg);
-      }
-
-      30% {
-        opacity: 0.8;
-      }
-
-      100% {
-        bottom: 110%;
-        opacity: 0;
-        transform: scale(1) rotate(20deg);
-      }
-    }
 
     .modal-title {
       font-size: 1.3rem;
@@ -1455,8 +1289,12 @@
       visibility: visible;
     }
 
-    body.theme-nisa .mini-dialog-overlay {
-      background: rgba(18, 8, 18, 0.65);
+    body.theme-ares .mini-dialog-overlay {
+      background: rgba(10, 14, 10, 0.65);
+    }
+
+    body.theme-orchid .mini-dialog-overlay {
+      background: rgba(13, 10, 26, 0.65);
     }
 
     .mini-dialog-card {
@@ -1747,20 +1585,7 @@
         font-size: 3rem;
       }
 
-      .nisa-kitty {
-        width: 32px;
-        height: 32px;
-      }
 
-      .nisa-unicorn {
-        width: 34px;
-        height: 34px;
-      }
-
-      .ersin-shield {
-        width: 28px;
-        height: 28px;
-      }
 
       .mini-dialog-card {
         padding: 1.3rem 1.1rem 1.1rem;
@@ -1812,10 +1637,6 @@
   <!-- Celebration Modal (4th Session Grand Celebration) -->
   <div class="modal-overlay" id="celebModal">
     <div class="modal-card">
-      <div class="modal-hearts">
-        <span class="m-heart">💖</span><span class="m-heart">💕</span><span class="m-heart">🩷</span>
-        <span class="m-heart">💗</span><span class="m-heart">💖</span><span class="m-heart">🎀</span>
-      </div>
       <div class="modal-emoji" id="celebEmoji">🔥</div>
       <h2 class="modal-title" id="celebTitle">Mükemmel Odaklanma!</h2>
       <div class="modal-badge" id="celebBadge">Derin Odaklanma Ustası</div>
@@ -1867,80 +1688,6 @@
           <!-- Timer Card -->
           <section class="card" id="card" aria-label="Zamanlayıcı">
 
-            <!-- Ersin Ö. Modu: Security Shield (inline SVG) -->
-            <svg class="ersin-deco ersin-shield" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 8 L16 22 L16 48 C16 72 30 88 50 94 C70 88 84 72 84 48 L84 22 Z" fill="none"
-                stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" opacity="0.4" />
-              <path d="M50 16 L24 27 L24 48 C24 65 35 78 50 83 C65 78 76 65 76 48 L76 27 Z" fill="var(--accent)"
-                opacity="0.15" />
-              <polyline points="40,50 48,58 64,40" fill="none" stroke="var(--accent)" stroke-width="5"
-                stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
-            </svg>
-
-            <!-- Nisa G. Modu: Hello Kitty (inline SVG — zero outbound) -->
-            <svg class="nisa-deco nisa-kitty" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="22,32 18,8 38,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round" />
-              <polygon points="24,28 22,14 34,25" fill="var(--accent)" opacity="0.55" />
-              <polygon points="78,32 82,8 62,25" fill="#fff" stroke="#555" stroke-width="1.2" stroke-linejoin="round" />
-              <polygon points="76,28 78,14 66,25" fill="var(--accent)" opacity="0.55" />
-              <ellipse cx="50" cy="55" rx="32" ry="28" fill="#fff" stroke="#555" stroke-width="1.2" />
-              <ellipse cx="38" cy="52" rx="3.2" ry="3.8" fill="#333" />
-              <ellipse cx="62" cy="52" rx="3.2" ry="3.8" fill="#333" />
-              <ellipse cx="50" cy="58" rx="2.2" ry="1.8" fill="#f5a623" />
-              <line x1="12" y1="50" x2="33" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <line x1="12" y1="57" x2="33" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <line x1="14" y1="64" x2="33" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <line x1="88" y1="50" x2="67" y2="55" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <line x1="88" y1="57" x2="67" y2="58" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <line x1="86" y1="64" x2="67" y2="61" stroke="#888" stroke-width="0.8" opacity="0.5" />
-              <ellipse cx="25" cy="22" rx="6.5" ry="4.5" fill="var(--accent)" transform="rotate(-20 25 22)" />
-              <ellipse cx="17" cy="18" rx="5" ry="3.5" fill="var(--accent)" transform="rotate(10 17 18)" />
-              <circle cx="21" cy="20" r="2" fill="#fff" opacity="0.6" />
-            </svg>
-
-            <!-- Nisa G. Modu: Unicorn (inline SVG — zero outbound) -->
-            <svg class="nisa-deco nisa-unicorn" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="50,4 44,30 56,30" fill="#ffd700" stroke="#e6c200" stroke-width="0.8" />
-              <line x1="47" y1="14" x2="53" y2="14" stroke="#fff" stroke-width="0.6" opacity="0.5" />
-              <line x1="46" y1="20" x2="54" y2="20" stroke="#fff" stroke-width="0.6" opacity="0.5" />
-              <line x1="45.5" y1="26" x2="54.5" y2="26" stroke="#fff" stroke-width="0.6" opacity="0.5" />
-              <ellipse cx="50" cy="55" rx="26" ry="30" fill="#fff" stroke="#ddd" stroke-width="1" />
-              <polygon points="30,28 24,12 38,25" fill="#fff" stroke="#ddd" stroke-width="0.8" />
-              <polygon points="32,26 28,16 36,24" fill="var(--accent)" opacity="0.3" />
-              <ellipse cx="56" cy="48" rx="4" ry="4.5" fill="#333" />
-              <circle cx="57.5" cy="46.5" r="1.2" fill="#fff" />
-              <circle cx="62" cy="62" r="1.2" fill="#ddd" />
-              <path d="M28,32 Q18,42 22,56 Q14,50 18,38 Q10,48 14,34" fill="var(--accent)" opacity="0.5"
-                stroke="none" />
-              <path d="M24,38 Q16,48 20,60" fill="none" stroke="var(--break)" stroke-width="1.5" opacity="0.4" />
-              <polygon points="82,18 84,24 90,24 85,28 87,34 82,30 77,34 79,28 74,24 80,24" fill="#ffd700"
-                opacity="0.7">
-                <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite" />
-              </polygon>
-              <polygon points="18,72 19.5,76 24,76 20.5,78.5 22,83 18,80 14,83 15.5,78.5 12,76 16.5,76"
-                fill="var(--accent)" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite" />
-              </polygon>
-            </svg>
-
-            <!-- Nisa G. Modu: Ribbon Bow (inline SVG — center top) -->
-            <svg class="nisa-deco nisa-bow-center" viewBox="0 0 60 28" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="20" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(-8 20 12)" />
-              <ellipse cx="40" cy="12" rx="12" ry="7" fill="var(--accent)" opacity="0.7" transform="rotate(8 40 12)" />
-              <circle cx="30" cy="13" r="4" fill="var(--accent)" />
-              <circle cx="30" cy="13" r="2" fill="#fff" opacity="0.3" />
-              <path d="M26,17 Q28,26 30,28 Q32,26 34,17" fill="var(--accent)" opacity="0.5" />
-            </svg>
-
-            <!-- Sparkle particles (Nisa only) -->
-            <div class="nisa-sparkles">
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-            </div>
-
             <div class="clock-zone">
               <div class="clock" id="clock" aria-live="polite">25:00</div>
               <span class="clock-label" id="clockLabel">pomodoro</span>
@@ -1972,9 +1719,9 @@
 
           <!-- Theme Selector -->
           <nav class="theme-selector" id="themeSelector" aria-label="Arayüz teması">
-            <button class="theme-btn active" data-theme="default"><span class="theme-btn-emoji">🔴</span> Ersin Ö. Modu
-              (Default)</button>
-            <button class="theme-btn" data-theme="nisa"><span class="theme-btn-emoji">🎀</span> Nisa G. Modu</button>
+            <button class="theme-btn active" data-theme="default"><span class="theme-btn-emoji">🔴</span> Admin Modu</button>
+            <button class="theme-btn" data-theme="ares"><span class="theme-btn-emoji">🟢</span> Ares Modu</button>
+            <button class="theme-btn" data-theme="orchid"><span class="theme-btn-emoji">🟣</span> Orchid Modu</button>
           </nav>
 
           <!-- Settings Toggle -->
@@ -2092,52 +1839,72 @@
       var TR_MONTHS = ["Ocak", "\u015Eubat", "Mart", "Nisan", "May\u0131s", "Haziran", "Temmuz", "A\u011Fustos", "Eyl\u00FCl", "Ekim", "Kas\u0131m", "Aral\u0131k"];
 
       /* — Running Quotes (Shown while timer is active) — */
-      var ERSIN_QUOTES_POMO = [
+      var ADMIN_QUOTES_POMO = [
         "[B\u0130LG\u0130]: Derin odaklanma modu aktif. Siber savunma hatt\u0131 kuruluyor...",
         "[S\u0130STEM]: G\u00FCvenlik protokolleri devrede. Kesintisiz \u00E7al\u0131\u015Fma optimize edildi.",
         "[B\u0130LG\u0130]: Kaynaklar odaklanma hedefine tahsis edildi. Kodlama kararl\u0131l\u0131\u011F\u0131 sa\u011Fland\u0131.",
         "[OK]: A\u011F trafi\u011Fi izole edildi. Zero Trust felsefesiyle derin \u00E7al\u0131\u015Fma ba\u015Flad\u0131."
       ];
-      var ERSIN_QUOTES_BREAK = [
+      var ADMIN_QUOTES_BREAK = [
         "[MOLA]: Sistem kaynaklar\u0131 dinlendiriliyor. K\u0131sa mola modu.",
         "[MOLA]: Veritaban\u0131 optimizasyonu tamamland\u0131. Yenilenme zaman\u0131."
       ];
-      var NISA_QUOTES_POMO = [
-        "Sihirli krall\u0131kta odaklanma ba\u015Flad\u0131! Sistem Nisa i\u00E7in en verimli modu optimize ediyor... \uD83C\uDF38",
-        "Gelece\u011Fin b\u00FCy\u00FCk ba\u015Far\u0131lar\u0131 \u015Fu an bu ekranda kodlan\u0131yor. Harikas\u0131n Nisa! \uD83E\uDD84",
-        "EO Digital Lab G\u00FCvenlik Protokol\u00FC: Nisa'n\u0131n hayalleri ve hedefleri tam koruma alt\u0131nda! \uD83D\uDD12\uD83D\uDC96",
-        "Derin odaklanma modu aktif. Bu krall\u0131kta senin disiplinin kurallar\u0131 koyar! \u2728",
-        "K\u00FC\u00E7\u00FCk bir mola \u00F6ncesi harika bir seri. Ad\u0131m ad\u0131m hedeflere... \u2615"
+      var ARES_QUOTES_POMO = [
+        "[TAKT\u0130K]: Hedef kilitlendi. Odaklanma operasyonu ba\u015Flad\u0131.",
+        "[DURUM]: Taktiksel disiplin modu aktif. Dikkat da\u011F\u0131lmas\u0131na izin yok.",
+        "[KOMUT]: G\u00F6rev alan\u0131 temizlendi. Tam konsantrasyon sa\u011Fland\u0131.",
+        "[ARES]: Stratejik odaklanma devrede. Hedefler do\u011Frultusunda ilerleniyor."
       ];
-      var NISA_QUOTES_BREAK = [
-        "Harika bir seans bitti! \u015Eimdi zihnini dinlendirme ve g\u00FCzel bir kahve alma zaman\u0131 Nisa. \uD83C\uDF38\u2615",
-        "G\u00F6zlerini ekrandan ay\u0131r, derin bir nefes al. Krall\u0131\u011F\u0131n krali\u00E7esi k\u0131sa bir dinlenmeyi hak etti! \uD83D\uDC51\uD83E\uDD84"
+      var ARES_QUOTES_BREAK = [
+        "[GER\u0130 \u00C7EK\u0130LME]: Taktiksel mola. Enerji ve strateji yenileniyor.",
+        "[DURUM]: Operasyon ba\u015Far\u0131yla tamamland\u0131. K\u0131sa dinlenme protokol\u00FC."
+      ];
+      var ORCHID_QUOTES_POMO = [
+        "Derin odaklanma an\u0131. Zihin berrak, hedefler net \u2014 \u015Fimdi \u00FCretme zaman\u0131.",
+        "Her dakika bir yat\u0131r\u0131m. Sessiz kararl\u0131l\u0131kla b\u00FCy\u00FCk i\u015Fler ba\u015Far\u0131l\u0131r.",
+        "Zarafet ve disiplin bir arada. Odaklanma modun \u015Fu an dorukta.",
+        "\u0130lham ve kararl\u0131l\u0131k harmanland\u0131. Bu seans\u0131 m\u00FCkemmel tamamlayacaks\u0131n."
+      ];
+      var ORCHID_QUOTES_BREAK = [
+        "Harika bir seans tamamland\u0131. \u015Eimdi zihnini dinlendirme zaman\u0131.",
+        "G\u00F6zlerini ekrandan ay\u0131r, derin bir nefes al. K\u0131sa bir dinlenmeyi hak ettin."
       ];
 
       /* — Mini Decision Dialog: Session-Specific Texts & Button Labels — */
-      var ERSIN_MINI_TEXTS = [
-        "Tebrikler Ersin, ilk veri blo\u011Fu ba\u015Far\u0131yla i\u015Flendi. Siber hatlar kararl\u0131. \u015Eimdi sistem optimizasyonu i\u00E7in mola protokol\u00FCn\u00FC ba\u015Flatal\u0131m m\u0131, yoksa direkt sonraki operasyona m\u0131 ge\u00E7elim?",
-        "2. Seans tamamland\u0131, siber kalkan %50 g\u00FC\u00E7te! Odaklanma ritmin harika. K\u0131sa bir sistem dinlendirmesi mi, yoksa kodlamaya tam gaz devam m\u0131?",
-        "3. Seans m\u00FChUrlendi! B\u00FCy\u00FCk d\u00F6ng\u00FCye son bir ad\u0131m kald\u0131. Disiplinin sars\u0131lmaz d\u00FCzeyde. Son d\u00FCzl\u00FCk \u00F6ncesi derin bir nefes alal\u0131m m\u0131, devam m\u0131?"
+      var ADMIN_MINI_TEXTS = [
+        "\u0130lk veri blo\u011Fu ba\u015Far\u0131yla i\u015Flendi. Siber hatlar kararl\u0131. \u015Eimdi sistem optimizasyonu i\u00E7in mola protokol\u00FCn\u00FC ba\u015Flatal\u0131m m\u0131, yoksa direkt sonraki operasyona m\u0131 ge\u00E7elim?",
+        "2. Seans tamamland\u0131, siber kalkan %50 g\u00FC\u00E7te! Odaklanma ritmi harika. K\u0131sa bir sistem dinlendirmesi mi, yoksa kodlamaya tam gaz devam m\u0131?",
+        "3. Seans m\u00FChUrlendi! B\u00FCy\u00FCk d\u00F6ng\u00FCye son bir ad\u0131m kald\u0131. Son d\u00FCzl\u00FCk \u00F6ncesi derin bir nefes alal\u0131m m\u0131, devam m\u0131?"
       ];
-      var ERSIN_MINI_BREAK_LABELS = ["\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC"];
-      var ERSIN_MINI_CONT_LABELS = ["\uD83D\uDE80 Es Ge\u00E7, Devam Edelim!", "\uD83D\uDE80 Es Ge\u00E7, Devam!", "\uD83D\uDE80 Devam Edelim!"];
-      var ERSIN_MINI_TITLES = ["1. SEANS TAMAMLANDI", "2. SEANS TAMAMLANDI", "3. SEANS TAMAMLANDI"];
-      var ERSIN_MINI_EMOJIS = ["\uD83D\uDEE1\uFE0F", "\uD83D\uDD25", "\u26A1"];
+      var ADMIN_MINI_BREAK_LABELS = ["\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC", "\u2615 Mola Protokol\u00FC"];
+      var ADMIN_MINI_CONT_LABELS = ["\uD83D\uDE80 Es Ge\u00E7, Devam!", "\uD83D\uDE80 Es Ge\u00E7, Devam!", "\uD83D\uDE80 Devam Edelim!"];
+      var ADMIN_MINI_TITLES = ["1. SEANS TAMAMLANDI", "2. SEANS TAMAMLANDI", "3. SEANS TAMAMLANDI"];
+      var ADMIN_MINI_EMOJIS = ["\uD83D\uDEE1\uFE0F", "\uD83D\uDD25", "\u26A1"];
 
-      var NISA_MINI_TEXTS = [
-        "Aferin sana Nisa! \uD83D\uDC95 \u0130lk seans\u0131 ba\u015Far\u0131yla bitirdin, harika gidiyorsun. \u015Eimdi zihnini dinlendirmek i\u00E7in tatl\u0131 bir kahve molas\u0131 verelim mi, yoksa h\u0131z\u0131n\u0131 hi\u00E7 kesmeden devam m\u0131 ediyoruz? \uD83C\uDF38",
-        "S\u00FCpersin Nisa! \u0130kinci seans da bitti ve sen bug\u00FCn ger\u00E7ekten \u00E7ok disiplinlisin. \uD83D\uDC51 Enerjini ve o harika motivasyonunu tazelemek i\u00E7in k\u0131sa bir mola ister misin, yoksa devam m\u0131? \u2728",
-        "\u00DC\u00E7\u00FCnc\u00FC seans tamamland\u0131! B\u00FCy\u00FCk kutlama \u00F6ncesi son virajday\u0131z. \uD83D\uDC96 K\u00FC\u00E7\u00FCk bir dinlenme zihnine \u00E7ok iyi gelirdi ama devam etmek istersen de sonuna kadar destek\u00E7inim! Hadi karar ver: \uD83E\uDD84"
+      var ARES_MINI_TEXTS = [
+        "1. operasyon ba\u015Far\u0131yla tamamland\u0131. Taktiksel de\u011Ferlendirme zaman\u0131. Dinlenme protokol\u00FC m\u00FC, yoksa hemen sonraki hedefe ge\u00E7i\u015F mi?",
+        "2. hedef vuruldu. Performans \u00FCst d\u00FCzeyde. K\u0131sa bir taktiksel mola m\u0131, yoksa momentum korunsun mu?",
+        "3. a\u015Fama tamamland\u0131! Final operasyonuna son bir ad\u0131m. Enerji toplama m\u0131, direkt sald\u0131r\u0131 m\u0131?"
       ];
-      var NISA_MINI_BREAK_LABELS = ["\uD83C\uDF80 K\u0131sa Bir Mola", "\uD83C\uDF80 K\u0131sa Bir Mola", "\uD83C\uDF80 K\u0131sa Bir Mola"];
-      var NISA_MINI_CONT_LABELS = ["\u2728 Odaklanmaya Devam!", "\u2728 Odaklanmaya Devam!", "\u2728 Odaklanmaya Devam!"];
-      var NISA_MINI_TITLES = ["\uD83C\uDF38 1. Seans Bitti!", "\uD83D\uDC51 2. Seans Bitti!", "\uD83D\uDC96 3. Seans Bitti!"];
-      var NISA_MINI_EMOJIS = ["\uD83C\uDF38", "\uD83D\uDC51", "\uD83D\uDC96"];
+      var ARES_MINI_BREAK_LABELS = ["\uD83C\uDFAF Taktiksel Mola", "\uD83C\uDFAF Taktiksel Mola", "\uD83C\uDFAF Taktiksel Mola"];
+      var ARES_MINI_CONT_LABELS = ["\u2694\uFE0F Devam Et", "\u2694\uFE0F Devam Et", "\u2694\uFE0F Hedefe Do\u011Fru!"];
+      var ARES_MINI_TITLES = ["\uD83C\uDFAF 1. OPERASYON TAMAMLANDI", "\u2694\uFE0F 2. OPERASYON TAMAMLANDI", "\u26A1 3. OPERASYON TAMAMLANDI"];
+      var ARES_MINI_EMOJIS = ["\uD83C\uDFAF", "\u2694\uFE0F", "\u26A1"];
+
+      var ORCHID_MINI_TEXTS = [
+        "\u0130lk seans ba\u015Far\u0131yla tamamland\u0131, harika gidiyorsun. \u015Eimdi zihnini dinlendirmek i\u00E7in k\u0131sa bir mola verelim mi, yoksa h\u0131z\u0131n\u0131 kesmeden devam m\u0131?",
+        "\u0130kinci seans da bitti ve bug\u00FCn ger\u00E7ekten \u00E7ok disiplinli bir performans sergiliyorsun. Enerjini tazelemek i\u00E7in k\u0131sa bir mola ister misin?",
+        "\u00DC\u00E7\u00FCnc\u00FC seans tamamland\u0131! B\u00FCy\u00FCk kutlama \u00F6ncesi son virajday\u0131z. K\u00FC\u00E7\u00FCk bir dinlenme mi, devam m\u0131?"
+      ];
+      var ORCHID_MINI_BREAK_LABELS = ["\uD83C\uDF3C K\u0131sa Bir Mola", "\uD83C\uDF3C K\u0131sa Bir Mola", "\uD83C\uDF3C K\u0131sa Bir Mola"];
+      var ORCHID_MINI_CONT_LABELS = ["\u2728 Odaklanmaya Devam", "\u2728 Odaklanmaya Devam", "\u2728 Devam Edelim!"];
+      var ORCHID_MINI_TITLES = ["\u2728 1. Seans Bitti!", "\uD83C\uDF3C 2. Seans Bitti!", "\uD83D\uDC9C 3. Seans Bitti!"];
+      var ORCHID_MINI_EMOJIS = ["\u2728", "\uD83C\uDF3C", "\uD83D\uDC9C"];
 
       /* — Soft Skip Advice (Toast when skipping break from mini dialog) — */
-      var ERSIN_SKIP_ADVICE = "[\u00D6NER\u0130]: Sistem kararl\u0131l\u0131\u011F\u0131 i\u00E7in mola \u00F6nerilir, ancak haz\u0131rsan\u0131z odaklanmaya devam edebilirsiniz.";
-      var NISA_SKIP_ADVICE = "K\u00FC\u00E7\u00FCk bir mola vermen harika olurdu ama \u00E7al\u0131\u015Fmaya devam etmek istersen sihirli g\u00FC\u00E7lerinle yan\u0131nday\u0131m! \u2728";
+      var ADMIN_SKIP_ADVICE = "[\u00D6NER\u0130]: Sistem kararl\u0131l\u0131\u011F\u0131 i\u00E7in mola \u00F6nerilir, ancak haz\u0131rsan\u0131z odaklanmaya devam edebilirsiniz.";
+      var ARES_SKIP_ADVICE = "[UYARI]: Taktiksel dinlenme \u00F6nerilir. Ancak moral y\u00FCksekse operasyona devam edilebilir.";
+      var ORCHID_SKIP_ADVICE = "K\u0131sa bir mola vermen harika olurdu ama devam etmek istersen sonuna kadar destek burada! \u2728";
 
       /* ---- State ---- */
       var mode = "pomodoro";
@@ -2232,7 +1999,7 @@
               dur.long = (typeof d.long === "number" && !isNaN(d.long)) ? clamp(d.long, LIMITS.long[0], LIMITS.long[1]) : 15;
               volume = (typeof d.volume === "number" && !isNaN(d.volume)) ? clamp(d.volume, 0, 1) : 0.65;
               sessions = (typeof d.sessions === "number" && !isNaN(d.sessions)) ? clamp(d.sessions, 0, 9999) : 0;
-              var VALID_THEMES = ["default", "nisa"];
+              var VALID_THEMES = ["default", "ares", "orchid"];
               currentTheme = (d.theme && VALID_THEMES.indexOf(d.theme) !== -1) ? d.theme : "default";
             }
           }
@@ -2305,27 +2072,34 @@
          ================================================================== */
       function applyTheme(name) {
         currentTheme = name;
-        document.body.classList.remove("theme-nisa");
-        if (name === "nisa") document.body.classList.add("theme-nisa");
+        document.body.classList.remove("theme-ares", "theme-orchid");
+        if (name === "ares") document.body.classList.add("theme-ares");
+        if (name === "orchid") document.body.classList.add("theme-orchid");
         $themeBtns.forEach(function (btn) { btn.classList.toggle("active", btn.dataset.theme === name); });
-        updateNisaLabels();
+        updateThemeLabels();
         updateQuoteVisibility();
         saveCfg();
       }
 
-      function isNisa() { return currentTheme === "nisa"; }
+      function getTheme() { return currentTheme; }
 
-      function updateNisaLabels() {
-        if (isNisa()) {
-          $statsPanelTitle.textContent = "\uD83D\uDC51 Nisa\u2019n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131 \uD83E\uDD84 Ge\u00E7mi\u015F Loglar\u0131";
-          $todaySessionsLabel.textContent = "\uD83C\uDF38 Sihirli Odaklanma Saati";
-          $todayHoursLabel.textContent = "\u2728 B\u00FCy\u00FCl\u00FC S\u00FCre";
-          $logSectionTitle.textContent = "\uD83C\uDF38 Ge\u00E7mi\u015F B\u00FCy\u00FCleri";
+      function updateThemeLabels() {
+        var t = getTheme();
+        if (t === "ares") {
+          $statsPanelTitle.textContent = "🎯 Operasyon Logları ve Görev Durumu";
+          $todaySessionsLabel.textContent = "Bugün Operasyon";
+          $todayHoursLabel.textContent = "Taktiksel Odak Süresi";
+          $logSectionTitle.textContent = "Son 7 Günlük Görevler";
+        } else if (t === "orchid") {
+          $statsPanelTitle.textContent = "✨ Odaklanma Günlüğü ve Başarı Durumu";
+          $todaySessionsLabel.textContent = "Bugün Tamamlanan Seanslar";
+          $todayHoursLabel.textContent = "Zarif Odak Süresi";
+          $logSectionTitle.textContent = "Son 7 Günlük Günlük";
         } else {
-          $statsPanelTitle.textContent = "\uD83D\uDCCA \u00C7al\u0131\u015Fma Loglar\u0131 ve Ba\u015Far\u0131 Durumu";
-          $todaySessionsLabel.textContent = "Bug\u00FCn Seans";
-          $todayHoursLabel.textContent = "Odaklanma S\u00FCresi";
-          $logSectionTitle.textContent = "Son 7 G\u00FCn";
+          $statsPanelTitle.textContent = "📊 Çalışma Logları ve Başarı Durumu";
+          $todaySessionsLabel.textContent = "Bugün Seans";
+          $todayHoursLabel.textContent = "Odaklanma Süresi";
+          $logSectionTitle.textContent = "Son 7 Gün";
         }
       }
 
@@ -2333,8 +2107,11 @@
          MOTIVATIONAL QUOTES
          ================================================================== */
       function updateQuoteText() {
-        var n = isNisa();
-        var arr = mode === "pomodoro" ? (n ? NISA_QUOTES_POMO : ERSIN_QUOTES_POMO) : (n ? NISA_QUOTES_BREAK : ERSIN_QUOTES_BREAK);
+        var t = getTheme();
+        var arr;
+        if (t === "ares") arr = mode === "pomodoro" ? ARES_QUOTES_POMO : ARES_QUOTES_BREAK;
+        else if (t === "orchid") arr = mode === "pomodoro" ? ORCHID_QUOTES_POMO : ORCHID_QUOTES_BREAK;
+        else arr = mode === "pomodoro" ? ADMIN_QUOTES_POMO : ADMIN_QUOTES_BREAK;
         $quote.textContent = arr[Math.floor(Math.random() * arr.length)];
       }
 
@@ -2372,23 +2149,23 @@
 
       function renderAchievement() {
         var cycleProgress = sessions % 4;
-        var n = isNisa();
+        var t = getTheme();
         if (sessions >= 4) {
-          $achieveIcon.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
+          $achieveIcon.textContent = t === "ares" ? "⚡" : (t === "orchid" ? "💜" : "🔥");
           $achieveIcon.classList.add("glow");
-          $achieveTitle.textContent = n ? "Odaklanma Prensesi \u2661" : "Derin Odaklanma Ustas\u0131";
+          $achieveTitle.textContent = t === "ares" ? "Taktiksel Operasyon Lideri" : (t === "orchid" ? "Zarafet ve Odak Elçisi" : "Derin Odaklanma Ustası");
           if (cycleProgress === 0) {
-            $achieveSub.textContent = sessions + " Pomodoro tamamland\u0131 \u2014 Harika!";
+            $achieveSub.textContent = sessions + " Pomodoro tamamlandı — Mükemmel!";
             $achieveBar.style.width = "100%";
           } else {
-            $achieveSub.textContent = sessions + " Pomodoro \u2022 " + cycleProgress + "/4 sonraki d\u00F6ng\u00FC";
+            $achieveSub.textContent = sessions + " Pomodoro • " + cycleProgress + "/4 sonraki döngü";
             $achieveBar.style.width = (cycleProgress / 4 * 100) + "%";
           }
         } else {
-          $achieveIcon.textContent = n ? "\uD83C\uDF38" : "\uD83C\uDF31";
+          $achieveIcon.textContent = t === "ares" ? "🧭" : (t === "orchid" ? "🌸" : "🌱");
           $achieveIcon.classList.remove("glow");
-          $achieveTitle.textContent = n ? "Geli\u015Fiyor \u2661" : "Geli\u015Fiyor";
-          $achieveSub.textContent = sessions + " / 4 Pomodoro tamamland\u0131";
+          $achieveTitle.textContent = t === "ares" ? "Operasyon Devam Ediyor" : (t === "orchid" ? "İlerleme Kaydediliyor" : "Gelişiyor");
+          $achieveSub.textContent = sessions + " / 4 Pomodoro tamamlandı";
           $achieveBar.style.width = (sessions / 4 * 100) + "%";
         }
       }
@@ -2517,13 +2294,17 @@
             /* 4th session: Grand Celebration Modal + Auto Long Break */
             showCelebration();
             sendNotification("Pomodoro tamamland\u0131!", "Uzun mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
-            notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131! Uzun mola zaman\u0131.");
+            var t = getTheme();
+            var icon = t === "ares" ? "\uD83C\uDFAF" : (t === "orchid" ? "\u2728" : "\uD83C\uDF45");
+            notify(icon, "Pomodoro tamamland\u0131! Uzun mola zaman\u0131.");
             setMode("long");
           } else {
             /* 1st, 2nd, 3rd session: Mini Decision Dialog */
             showMiniDialog(cyclePos);
             sendNotification("Pomodoro tamamland\u0131!", "Mola zaman\u0131. " + sessions + " seans tamamland\u0131.");
-            notify(isNisa() ? "\uD83C\uDF53" : "\uD83C\uDF45", "Pomodoro tamamland\u0131!");
+            var t = getTheme();
+            var icon = t === "ares" ? "\u26A1" : (t === "orchid" ? "\uD83D\uDC9C" : "\uD83C\uDF45");
+            notify(icon, "Pomodoro tamamland\u0131!");
           }
         } else {
           /* Break completed — auto-switch back to pomodoro */
@@ -2537,13 +2318,27 @@
          MINI SESSION DECISION DIALOG (Strict textContent — No innerHTML)
          ================================================================== */
       function showMiniDialog(cyclePos) {
-        var n = isNisa();
+        var t = getTheme();
         var idx = cyclePos - 1;
-        $miniDialogEmoji.textContent = n ? NISA_MINI_EMOJIS[idx] : ERSIN_MINI_EMOJIS[idx];
-        $miniDialogTitle.textContent = n ? NISA_MINI_TITLES[idx] : ERSIN_MINI_TITLES[idx];
-        $miniDialogText.textContent = n ? NISA_MINI_TEXTS[idx] : ERSIN_MINI_TEXTS[idx];
-        $miniDialogBreak.textContent = n ? NISA_MINI_BREAK_LABELS[idx] : ERSIN_MINI_BREAK_LABELS[idx];
-        $miniDialogContinue.textContent = n ? NISA_MINI_CONT_LABELS[idx] : ERSIN_MINI_CONT_LABELS[idx];
+        if (t === "ares") {
+          $miniDialogEmoji.textContent = ARES_MINI_EMOJIS[idx];
+          $miniDialogTitle.textContent = ARES_MINI_TITLES[idx];
+          $miniDialogText.textContent = ARES_MINI_TEXTS[idx];
+          $miniDialogBreak.textContent = ARES_MINI_BREAK_LABELS[idx];
+          $miniDialogContinue.textContent = ARES_MINI_CONT_LABELS[idx];
+        } else if (t === "orchid") {
+          $miniDialogEmoji.textContent = ORCHID_MINI_EMOJIS[idx];
+          $miniDialogTitle.textContent = ORCHID_MINI_TITLES[idx];
+          $miniDialogText.textContent = ORCHID_MINI_TEXTS[idx];
+          $miniDialogBreak.textContent = ORCHID_MINI_BREAK_LABELS[idx];
+          $miniDialogContinue.textContent = ORCHID_MINI_CONT_LABELS[idx];
+        } else {
+          $miniDialogEmoji.textContent = ADMIN_MINI_EMOJIS[idx];
+          $miniDialogTitle.textContent = ADMIN_MINI_TITLES[idx];
+          $miniDialogText.textContent = ADMIN_MINI_TEXTS[idx];
+          $miniDialogBreak.textContent = ADMIN_MINI_BREAK_LABELS[idx];
+          $miniDialogContinue.textContent = ADMIN_MINI_CONT_LABELS[idx];
+        }
         $miniDialog.classList.add("active");
       }
 
@@ -2559,8 +2354,10 @@
 
       function onMiniContinue() {
         hideMiniDialog();
-        var n = isNisa();
-        notify(n ? "\uD83D\uDC95" : "\u26A0\uFE0F", n ? NISA_SKIP_ADVICE : ERSIN_SKIP_ADVICE);
+        var t = getTheme();
+        if (t === "ares") notify("\u26A0\uFE0F", ARES_SKIP_ADVICE);
+        else if (t === "orchid") notify("\u2728", ORCHID_SKIP_ADVICE);
+        else notify("\u26A0\uFE0F", ADMIN_SKIP_ADVICE);
         setMode("pomodoro");
       }
 
@@ -2594,13 +2391,23 @@
          CELEBRATION MODAL (4th Session — Strict textContent)
          ================================================================== */
       function showCelebration() {
-        var n = isNisa();
-        $celebEmoji.textContent = n ? "\uD83D\uDC96" : "\uD83D\uDD25";
-        $celebTitle.textContent = n ? "Sihirli Odaklanma Ba\u015Far\u0131yla Tamamland\u0131! \uD83D\uDC51" : "M\u00FCkemmel Odaklanma!";
-        $celebBadge.textContent = n ? "ODAKLANMA PRENSESI \uD83D\uDC51" : "DER\u0130N ODAKLANMA USTASI";
-        $celebDesc.textContent = n
-          ? "Bug\u00FCn g\u00F6sterdi\u011Fin disiplin ve odaklanma harikuladeydi. Nisa'n\u0131n \u00C7al\u0131\u015Fma Krall\u0131\u011F\u0131'nda yeni bir rekor k\u0131r\u0131ld\u0131!\n\u015Eimdi hak etti\u011Fin kahve molas\u0131n\u0131 verebilirsin. EO Digital Lab seninle gurur duyuyor! \uD83C\uDF38\uD83E\uDD84"
-          : "4 Pomodoro seans\u0131n\u0131 art arda tamamlad\u0131n.\nBu seviye disiplin ve kararl\u0131l\u0131k gerektirir. Tebrikler!";
+        var t = getTheme();
+        if (t === "ares") {
+          $celebEmoji.textContent = "🎯";
+          $celebTitle.textContent = "Tamamlanmış Operasyon!";
+          $celebBadge.textContent = "TAKTİKSEL OPERASYON LİDERİ";
+          $celebDesc.textContent = "Savaş alanında büyük başarı. Operasyon planına tam uyum sağlandı.";
+        } else if (t === "orchid") {
+          $celebEmoji.textContent = "✨";
+          $celebTitle.textContent = "Harika Bir Odaklanma!";
+          $celebBadge.textContent = "ZARAFET VE ODAK ELÇİSİ";
+          $celebDesc.textContent = "Harika bir çalışma maratonu tamamlandı. Zihinsel derinliğinizi kutlayın.";
+        } else {
+          $celebEmoji.textContent = "🔥";
+          $celebTitle.textContent = "Mükemmel Odaklanma!";
+          $celebBadge.textContent = "DERİN ODAKLANMA USTASI";
+          $celebDesc.textContent = "4 seans bitti, harika disiplin!";
+        }
         $celebModal.classList.add("active");
       }
 
